@@ -22,18 +22,17 @@ class AuthenticationInterceptor : HandlerInterceptor {
         fun invalidateToken(token: String) {
             cache.invalidate(token)
         }
-    }
 
-    // TODO: add token validation
-    private fun isValid(token: String): Boolean {
-        return cache.getIfPresent(token) != null
+        fun tokenExists(token: String): Boolean {
+            return cache.getIfPresent(token) != null
+        }
     }
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
         val token: String? = request.getHeader("token")
 
-        if (token == null || !isValid(token)) {
-            response.sendError(401)
+        if (token == null || !tokenExists(token)) {
+            response.sendError(402)
             return false
         }
 
