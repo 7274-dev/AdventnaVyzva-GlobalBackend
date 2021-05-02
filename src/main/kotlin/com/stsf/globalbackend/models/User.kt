@@ -9,8 +9,8 @@ data class User(
     @GeneratedValue(strategy = GenerationType.AUTO)
     val id: Long,
 
-    val username: String,
-    val password: String,
-    val name: String,
-    val isTeacher: Boolean
+    var username: String,
+    var password: String,
+    var name: String,
+    var isTeacher: Boolean
 )
