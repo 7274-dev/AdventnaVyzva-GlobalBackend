@@ -1,7 +1,7 @@
 package com.stsf.globalbackend.services
 
 import com.stsf.globalbackend.exceptions.InsufficientPermissionsException
-import com.stsf.globalbackend.exceptions.NoUserFoundException
+import com.stsf.globalbackend.exceptions.NoSuchUserException
 import com.stsf.globalbackend.models.User
 import com.stsf.globalbackend.repositories.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,7 +17,7 @@ class AdminService(
 ) {
 
     fun getUserPassword(userId: Long): String { // :(((
-        val targetUser = userRepository.findByIdOrNull(userId) ?: throw NoUserFoundException()
+        val targetUser = userRepository.findByIdOrNull(userId) ?: throw NoSuchUserException()
 
         if (targetUser.isTeacher) {
             throw InsufficientPermissionsException()
@@ -52,7 +52,7 @@ class AdminService(
             newPassword = generatePassword(8)
         }
 
-        val targetUser = userRepository.findByIdOrNull(userId) ?: throw NoUserFoundException()
+        val targetUser = userRepository.findByIdOrNull(userId) ?: throw NoSuchUserException()
 
         targetUser.password = newPassword
 

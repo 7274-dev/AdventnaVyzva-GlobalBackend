@@ -2,7 +2,7 @@ package com.stsf.globalbackend.services
 
 import com.stsf.globalbackend.exceptions.BadCredentialsException
 import com.stsf.globalbackend.exceptions.BadTokenException
-import com.stsf.globalbackend.exceptions.NoUserFoundException
+import com.stsf.globalbackend.exceptions.NoSuchUserException
 import com.stsf.globalbackend.interceptors.AuthenticationInterceptor
 import com.stsf.globalbackend.models.User
 import com.stsf.globalbackend.repositories.UserRepository
@@ -48,7 +48,7 @@ class AuthenticationService(
     fun getUserByToken(token: String): User {
         val userId = AuthenticationInterceptor.getUserIdByToken(token) ?: throw BadTokenException()
 
-        return userRepository.findByIdOrNull(userId) ?: throw NoUserFoundException()
+        return userRepository.findByIdOrNull(userId) ?: throw NoSuchUserException()
     }
 
     fun tokenExists(token: String): Boolean {

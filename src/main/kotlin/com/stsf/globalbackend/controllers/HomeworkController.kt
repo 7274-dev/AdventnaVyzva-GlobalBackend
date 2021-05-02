@@ -1,72 +1,64 @@
 package com.stsf.globalbackend.controllers
 
 
-import com.stsf.globalbackend.exceptions.BadTokenException
 import com.stsf.globalbackend.exceptions.InsufficientPermissionsException
-import com.stsf.globalbackend.repositories.ClassRepository
-import com.stsf.globalbackend.request.Date
-import com.stsf.globalbackend.request.GenericResponse
-import com.stsf.globalbackend.request.Homework
-import com.stsf.globalbackend.request.UpdatedHomework
+import com.stsf.globalbackend.request.*
 import com.stsf.globalbackend.services.AuthenticationService
 import com.stsf.globalbackend.services.HomeworkService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
-import java.text.SimpleDateFormat
 
 @RestController("/api")
 class HomeworkController (
 	@Autowired
 	private val auth: AuthenticationService,
 	@Autowired
-	private val homeworkService: HomeworkService,
-	@Autowired
-	private val classRepository: ClassRepository,
-		) {
+	private val homeworkService: HomeworkService
+) {
 
 	@PutMapping("/homework")
 	fun addHomework(@RequestHeader token: String, @RequestBody homework: Homework): GenericResponse<com.stsf.globalbackend.models.Homework> {
-		val authentificatedUser = auth.getUserByToken(token)
+		val authenticatedUser = auth.getUserByToken(token)
 
-		if (!authentificatedUser.isTeacher) {
+		if (!authenticatedUser.isTeacher) {
 			throw InsufficientPermissionsException()
-		} else {
-			return GenericResponse(homeworkService.createNewHomework(classRepository.findClassById(homework.classId),
-									homework.title, homework.text,
-									SimpleDateFormat("dd-MM-yy HH:mm:ss").parse(homework.due.toString()),
-									SimpleDateFormat("dd-MM-yy HH:mm:ss").parse(homework.due.toString())))
 		}
+
+		return GenericResponse(homeworkService.createHomework(homework))
 	}
 
 	@DeleteMapping("/homework")
 	fun deleteHomework(@RequestHeader token: String, @RequestParam homeworkId: Long): GenericResponse<String> {
-		return GenericResponse(homeworkService.deleteHomework(homeworkId))
+		val authenticatedUser = auth.getUserByToken(token)
+
+		if (!authenticatedUser.isTeacher) {
+			throw InsufficientPermissionsException()
+		}
+
+		homeworkService.deleteHomework(homeworkId)
+
+		return GenericResponse("Ok")
 	}
 
 	@PatchMapping("/homework")
-	fun editHomework(@RequestHeader token: String, @RequestBody homework: UpdatedHomework): GenericResponse<com.stsf.globalbackend.models.Homework> {
+	fun editHomework(@RequestHeader token: String, @RequestBody homework: Homework): GenericResponse<com.stsf.globalbackend.models.Homework> {
+		val authenticatedUser = auth.getUserByToken(token)
 
-		return GenericResponse(homeworkService.createNewHomework(classRepository.findClassById(homework.classId),
-								homework.title, homework.text,
-								SimpleDateFormat("dd-MM-yy HH:mm:ss").parse(homework.due.toString()),
-								SimpleDateFormat("dd-MM-yy HH:mm:ss").parse(homework.from.toString())))
+		if (!authenticatedUser.isTeacher) {
+			throw InsufficientPermissionsException()
+		}
+
+		return GenericResponse(homeworkService.createHomework(homework))
 
 	}
 
 	@GetMapping("/homework/class")
-	fun getAllHomeworksForClassById(@RequestHeader token: String, @RequestParam classId: Long): GenericResponse<List<com.stsf.globalbackend.models.Homework>> {
-		if (auth.tokenExists(token)) {
-		return GenericResponse(homeworkService.getAllHomeworksByClass(classRepository.findClassById(classId)))
-		} else throw BadTokenException()
+	fun getHomeworkForClass(@RequestHeader token: String, @RequestParam classId: Long): GenericResponse<List<com.stsf.globalbackend.models.Homework>> {
+		return GenericResponse(homeworkService.getHomeworkByClass(classId))
 	}
 
 	@GetMapping("/homework/due")
-	fun getAllByDateForClass(@RequestHeader token: String, @RequestParam classId: Long, @RequestBody date: Date): GenericResponse<List<com.stsf.globalbackend.models.Homework>> {
-		if (auth.tokenExists(token)) {
-
-			return GenericResponse(homeworkService.getAllHomeworksByDateForClass(classRepository.findClassById(classId),
-				SimpleDateFormat("dd-MM-yy HH:mm:ss").parse(date.date.toString())))
-
-		} else throw BadTokenException()
+	fun getHomeworkByDateAndClass(@RequestHeader token: String, @RequestBody dateAndClassId: DateAndClassId): GenericResponse<List<com.stsf.globalbackend.models.Homework>> {
+			return GenericResponse(homeworkService.getHomeworkByDateAndClass(dateAndClassId.classId, dateAndClassId.date))
 	}
 }

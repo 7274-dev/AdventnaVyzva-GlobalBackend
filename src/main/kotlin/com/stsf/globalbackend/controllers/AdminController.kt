@@ -1,7 +1,7 @@
 package com.stsf.globalbackend.controllers
 
 import com.stsf.globalbackend.exceptions.InsufficientPermissionsException
-import com.stsf.globalbackend.exceptions.NoUserFoundException
+import com.stsf.globalbackend.exceptions.NoSuchUserException
 import com.stsf.globalbackend.models.User
 import com.stsf.globalbackend.request.GenericResponse
 import com.stsf.globalbackend.services.AdminService
@@ -41,7 +41,7 @@ class AdminController(
         }
 
         if (!userService.isStudent(userId)) {
-            throw NoUserFoundException()
+            throw NoSuchUserException()
         }
 
         adminService.deleteUser(userId)
@@ -58,7 +58,7 @@ class AdminController(
         }
 
         if (!userService.isStudent(userId)) {
-            throw NoUserFoundException()
+            throw NoSuchUserException()
         }
 
         return GenericResponse(adminService.changeUserPassword(userId, newPassword))
@@ -85,7 +85,7 @@ class AdminController(
         }
 
         if (!userService.isTeacher(userId)) {
-            throw NoUserFoundException()
+            throw NoSuchUserException()
         }
 
         adminService.deleteUser(userId)
@@ -101,7 +101,7 @@ class AdminController(
         }
 
         if (!userService.isTeacher(userId)) {
-            throw NoUserFoundException()
+            throw NoSuchUserException()
         }
 
         return GenericResponse(adminService.changeUserPassword(userId, newPassword))
