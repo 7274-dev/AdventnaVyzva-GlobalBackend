@@ -21,7 +21,7 @@ class AuthenticationService(
         for (user in users) {
             if (user.password == password) {
                 targetUser = user
-                break;
+                break
             }
         }
 
