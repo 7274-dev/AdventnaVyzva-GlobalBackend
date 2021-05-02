@@ -8,6 +8,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 class InterceptorAppConfig : WebMvcConfigurer {
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(AuthenticationInterceptor())
-            .addPathPatterns("/api/*") // authenticated paths here
+            .addPathPatterns("/api/**") // authenticated paths here
     }
 }

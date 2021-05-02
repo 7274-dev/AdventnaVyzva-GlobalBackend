@@ -26,6 +26,10 @@ class AuthenticationInterceptor : HandlerInterceptor {
         fun tokenExists(token: String): Boolean {
             return cache.getIfPresent(token) != null
         }
+
+        fun getUserIdByToken(token: String): Long? {
+            return cache.getIfPresent(token)
+        }
     }
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
