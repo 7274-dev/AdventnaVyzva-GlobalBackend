@@ -20,5 +20,5 @@ data class Homework(
     val due: Date,
 
     @Temporal(TemporalType.TIMESTAMP)
-    val openedFrom: Date
+    val from: Date
 )

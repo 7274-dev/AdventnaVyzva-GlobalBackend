@@ -50,4 +50,8 @@ class AuthenticationService(
 
         return userRepository.findByIdOrNull(userId) ?: throw NoUserFoundException()
     }
+
+    fun tokenExists(token: String): Boolean {
+        return AuthenticationInterceptor.tokenExists(token)
+    }
 }
