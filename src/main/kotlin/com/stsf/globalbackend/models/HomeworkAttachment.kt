@@ -3,12 +3,11 @@ package com.stsf.globalbackend.models
 import javax.persistence.*
 
 @Entity
-data class File(
+data class HomeworkAttachment(
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     val id: Long,
 
-    val name: String,
-    val path: String,
+    @ManyToOne
+    val homework: Homework
 )
-// TODO: Add a entity to represent homework to file relation

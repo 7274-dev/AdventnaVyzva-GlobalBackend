@@ -4,5 +4,6 @@ import com.stsf.globalbackend.models.User
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface UserRepository : JpaRepository<User, Long> {
-    fun getUsersByUsername(username: String): List<User>
+    fun findAllByUsername(username: String): List<User>
+    fun findAllByNameContains(s: String): List<User>
 }
