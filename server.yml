@@ -9,3 +9,5 @@ services:
     environment:
       POSTGRES_USER: dbuser
       POSTGRES_PASSWORD: dbuserpassword
+      POSTGRES_DB: adventnavyzva
+
