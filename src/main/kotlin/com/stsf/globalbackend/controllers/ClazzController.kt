@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController
 class ClazzController (@Autowired
                        private val classService: ClassService) {
 
-    @GetMapping("/test")
+    @GetMapping("/lol")
 	fun testClass(@RequestParam className: String) {
 	    classService.createClass(className)
 	}
