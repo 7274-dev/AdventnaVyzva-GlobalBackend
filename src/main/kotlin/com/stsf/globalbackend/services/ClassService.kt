@@ -35,4 +35,11 @@ class ClassService (
 		classMemberRepository.deleteInBatch(members)
 	}
 
+	fun createClass(className: String) {
+
+		val classes = classRepository.findAllByName(className)
+		println(classes.toString())
+
+	}
+
 }

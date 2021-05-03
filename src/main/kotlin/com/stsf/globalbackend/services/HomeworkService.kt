@@ -7,6 +7,8 @@ import com.stsf.globalbackend.repositories.HomeworkRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
+import java.time.ZoneId
 import java.util.*
 
 @Service
@@ -20,8 +22,23 @@ class HomeworkService (
 
 	fun getHomeworkByClass(classId: Long): List<Homework> {
 		val clazz = classRepository.findByIdOrNull(classId) ?: throw NoSuchClassException()
+		val homework = homeworkRepository.findAllByClazz(clazz)
+		val output = mutableListOf<Homework>()
 
-		return homeworkRepository.findAllByClazz(clazz)
+		val today = Date.from(LocalDateTime.now()
+			.atZone(ZoneId.systemDefault())
+			.toInstant())
+
+		for (hw in homework) {
+
+			if (hw.fromDate.after(today)) {
+				output.add(hw)
+			}
+
+		}
+
+		return output
+
 	}
 
 	fun getHomeworkByDateAndClass(classId: Long, date: Date): List<Homework> {
@@ -30,8 +47,12 @@ class HomeworkService (
 		val homework = homeworkRepository.findAllByClazz(clazz)
 		val output: MutableList<Homework> = mutableListOf()
 
+		val today = Date.from(LocalDateTime.now()
+			.atZone(ZoneId.systemDefault())
+			.toInstant())
+
 		for (hw in homework) {
-			if (hw.due.before(date)) {
+			if (hw.due.before(date) && hw.fromDate.after(today)) {
 				output.add(hw)
 			}
 		}
