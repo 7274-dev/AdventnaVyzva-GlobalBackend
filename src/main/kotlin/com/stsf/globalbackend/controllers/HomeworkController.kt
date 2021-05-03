@@ -8,7 +8,7 @@ import com.stsf.globalbackend.services.HomeworkService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
-@RestController("/api")
+@RestController("/api/homework")
 class HomeworkController (
 	@Autowired
 	private val auth: AuthenticationService,
@@ -16,7 +16,7 @@ class HomeworkController (
 	private val homeworkService: HomeworkService
 ) {
 
-	@PutMapping("/homework")
+	@PutMapping
 	fun addHomework(@RequestHeader token: String, @RequestBody homework: Homework): GenericResponse<com.stsf.globalbackend.models.Homework> {
 		val authenticatedUser = auth.getUserByToken(token)
 
@@ -27,7 +27,7 @@ class HomeworkController (
 		return GenericResponse(homeworkService.createHomework(homework))
 	}
 
-	@DeleteMapping("/homework")
+	@DeleteMapping
 	fun deleteHomework(@RequestHeader token: String, @RequestParam homeworkId: Long): GenericResponse<String> {
 		val authenticatedUser = auth.getUserByToken(token)
 
@@ -40,7 +40,7 @@ class HomeworkController (
 		return GenericResponse("Ok")
 	}
 
-	@PatchMapping("/homework")
+	@PatchMapping
 	fun editHomework(@RequestHeader token: String, @RequestBody homework: Homework): GenericResponse<com.stsf.globalbackend.models.Homework> {
 		val authenticatedUser = auth.getUserByToken(token)
 
@@ -52,12 +52,12 @@ class HomeworkController (
 
 	}
 
-	@GetMapping("/homework/class")
+	@GetMapping("/class")
 	fun getHomeworkForClass(@RequestHeader token: String, @RequestParam classId: Long): GenericResponse<List<com.stsf.globalbackend.models.Homework>> {
 		return GenericResponse(homeworkService.getHomeworkByClass(classId))
 	}
 
-	@GetMapping("/homework/due")
+	@GetMapping("/due")
 	fun getHomeworkByDateAndClass(@RequestHeader token: String, @RequestBody dateAndClassId: DateAndClassId): GenericResponse<List<com.stsf.globalbackend.models.Homework>> {
 			return GenericResponse(homeworkService.getHomeworkByDateAndClass(dateAndClassId.classId, dateAndClassId.date))
 	}

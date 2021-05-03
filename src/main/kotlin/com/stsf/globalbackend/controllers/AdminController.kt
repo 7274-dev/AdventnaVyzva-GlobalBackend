@@ -10,7 +10,7 @@ import com.stsf.globalbackend.services.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
-@RestController("/api")
+@RestController("/api/admin")
 class AdminController(
     @Autowired
     private val adminService: AdminService,
