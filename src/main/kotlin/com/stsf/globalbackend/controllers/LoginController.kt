@@ -25,11 +25,10 @@ class LoginController(
     fun getUserType(@RequestHeader token: String): GenericResponse<String> {
         val authenticatedUser = authenticationService.getUserByToken(token)
 
-        if (authenticatedUser.isTeacher) {
-            return GenericResponse("teacher")
-        }
-        else {
-            return GenericResponse("student")
+        return if (authenticatedUser.isTeacher) {
+            GenericResponse("teacher")
+        } else {
+            GenericResponse("student")
         }
     }
 
