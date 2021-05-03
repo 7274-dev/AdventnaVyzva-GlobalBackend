@@ -17,7 +17,7 @@ class AuthenticationService(
     private val userRepository: UserRepository
 ) {
     fun createToken(username: String, password: String): String {
-        val users = userRepository.getUsersByUsername(username)
+        val users = userRepository.findAllByUsername(username)
 
         var targetUser: User? = null
 
