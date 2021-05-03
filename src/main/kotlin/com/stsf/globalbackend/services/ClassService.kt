@@ -31,16 +31,8 @@ class ClassService (
 	}
 
 	fun removeUserFromClass(userId: Long, classId: Long) {
-		val members = classMemberRepository.findByUserId(userId)
-
-		for (member: ClassMember in members) {
-
-			if (member.clazz.id == classId) {
-				classMemberRepository.delete(member)
-			}
-
-		}
-
+		val members = classMemberRepository.findAllByClassAndUserId(classId, userId)
+		classMemberRepository.deleteInBatch(members)
 	}
 
 }

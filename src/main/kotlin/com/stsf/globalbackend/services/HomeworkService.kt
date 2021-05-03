@@ -1,7 +1,6 @@
 package com.stsf.globalbackend.services
 
 import com.stsf.globalbackend.exceptions.NoSuchClassException
-import com.stsf.globalbackend.models.Class
 import com.stsf.globalbackend.models.Homework
 import com.stsf.globalbackend.repositories.ClassRepository
 import com.stsf.globalbackend.repositories.HomeworkRepository
@@ -22,13 +21,13 @@ class HomeworkService (
 	fun getHomeworkByClass(classId: Long): List<Homework> {
 		val clazz = classRepository.findByIdOrNull(classId) ?: throw NoSuchClassException()
 
-		return homeworkRepository.findAllByClass(clazz)
+		return homeworkRepository.findAllByClazz(clazz)
 	}
 
 	fun getHomeworkByDateAndClass(classId: Long, date: Date): List<Homework> {
 		val clazz = classRepository.findByIdOrNull(classId) ?: throw NoSuchClassException()
 
-		val homework = homeworkRepository.findAllByClass(clazz)
+		val homework = homeworkRepository.findAllByClazz(clazz)
 		val output: MutableList<Homework> = mutableListOf()
 
 		for (hw in homework) {

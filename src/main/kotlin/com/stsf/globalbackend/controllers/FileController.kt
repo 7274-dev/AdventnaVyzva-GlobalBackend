@@ -12,7 +12,8 @@ import java.io.InputStream
 import java.nio.file.Files
 import java.nio.file.spi.FileTypeDetector
 
-@RestController("/api/file")
+@RestController
+@RequestMapping("/api/file")
 class FileController(
     @Autowired
     private val fileService: FileService

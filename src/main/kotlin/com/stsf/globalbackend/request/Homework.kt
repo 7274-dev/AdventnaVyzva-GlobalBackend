@@ -13,6 +13,6 @@ data class Homework(
 	val due: Date,
 
 	@JsonFormat(pattern = "dd-MM-yy HH:mm:ss")
-	val from: Date,
+	val fromDate: Date,
 
-)
+	)

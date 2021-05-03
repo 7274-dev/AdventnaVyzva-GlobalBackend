@@ -6,10 +6,12 @@ import com.stsf.globalbackend.request.GenericResponse
 import com.stsf.globalbackend.services.SearchService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
-@RestController("/api/search")
+@RestController
+@RequestMapping("/api/search")
 class SearchController(
     @Autowired
     private val searchService: SearchService

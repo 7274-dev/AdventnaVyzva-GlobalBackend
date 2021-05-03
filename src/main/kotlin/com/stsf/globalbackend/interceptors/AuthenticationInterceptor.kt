@@ -33,6 +33,9 @@ class AuthenticationInterceptor : HandlerInterceptor {
     }
 
     override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
+        if (request.method == "OPTIONS") {
+            return true
+        }
         val token: String? = request.getHeader("token")
 
         if (token == null || !tokenExists(token)) {
