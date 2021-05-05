@@ -9,5 +9,6 @@ import org.springframework.web.bind.annotation.RestController
 class ClazzController (@Autowired classService: ClassService) {
 
 	//TODO Finish this crap, i cant do it because IntelliJ's having a stroke and aneurysm rn
+	// createClass, deleteClass, addUserToClass, removeUserFromClass -- classService 
 
 }
