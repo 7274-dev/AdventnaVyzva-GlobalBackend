@@ -1,7 +1,9 @@
 package com.stsf.globalbackend.services
 
+import com.stsf.globalbackend.exceptions.ClassAlreadyExistsException
 import com.stsf.globalbackend.exceptions.NoSuchClassException
 import com.stsf.globalbackend.exceptions.NoSuchUserException
+import com.stsf.globalbackend.models.Class
 import com.stsf.globalbackend.models.ClassMember
 import com.stsf.globalbackend.repositories.ClassMemberRepository
 import com.stsf.globalbackend.repositories.ClassRepository
@@ -31,14 +33,23 @@ class ClassService (
 	}
 
 	fun removeUserFromClass(userId: Long, classId: Long) {
+		// Thanks ivicek <3
 		val members = classMemberRepository.findAllByClassAndUserId(classId, userId)
 		classMemberRepository.deleteInBatch(members)
 	}
 
-	fun createClass(className: String) {
+	fun createClass(className: String): Class {
 
-		val classes = classRepository.findAllByName(className)
-		println(classes.toString())
+		// Since we've (ivicek) decided that there can be classes with same name, check is useless
+		var newClass = Class(-1, className)
+		return classRepository.save(newClass)
+
+	}
+
+	fun deleteClass(classId: Long) {
+
+		// Maybe do some black magic stuff and remove ClassMember?
+		classRepository.deleteById(classId)
 
 	}
 
