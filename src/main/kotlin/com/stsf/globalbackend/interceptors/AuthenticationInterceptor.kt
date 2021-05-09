@@ -39,7 +39,7 @@ class AuthenticationInterceptor : HandlerInterceptor {
         val token: String? = request.getHeader("token")
 
         if (token == null || !tokenExists(token)) {
-            response.sendError(402)
+            response.sendError(401)
             return false
         }
 
