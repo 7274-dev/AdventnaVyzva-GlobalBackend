@@ -1,5 +1,6 @@
 package com.stsf.globalbackend.controllers
 
+import com.stsf.globalbackend.exceptions.InsufficientPermissionsException
 import com.stsf.globalbackend.models.User
 import com.stsf.globalbackend.request.GenericResponse
 import com.stsf.globalbackend.services.AdminService
@@ -39,9 +40,11 @@ class LoginController(
         return GenericResponse("Ok")
     }
 
-    // STOPSHIP: remove this!!!!
     @PostMapping("/register")
     fun register(@RequestHeader username: String, @RequestHeader password: String, @RequestHeader name: String): GenericResponse<User> {
-        return GenericResponse(adminService.createStudentUser(username, password, name))
+        if (!adminService.isUserDatabaseEmpty()) {
+            throw InsufficientPermissionsException()
+        }
+        return GenericResponse(adminService.createTeacherAccount(username, password, name))
     }
 }
