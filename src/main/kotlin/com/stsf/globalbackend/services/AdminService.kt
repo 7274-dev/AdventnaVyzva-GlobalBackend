@@ -46,6 +46,10 @@ class AdminService(
         return output.toString()
     }
 
+    fun isUserDatabaseEmpty(): Boolean {
+        return userRepository.count() == 0L
+    }
+
     fun changeUserPassword(userId: Long, newPassword: String? = null): User {
         var newPassword = newPassword
         if (newPassword == null) {

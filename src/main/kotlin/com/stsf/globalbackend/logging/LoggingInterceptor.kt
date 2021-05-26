@@ -17,13 +17,15 @@ class LoggingInterceptor : HandlerInterceptor {
 	}
 
 	override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
+		// TODO Finish else statement
+
 		 var message: String
 		 var token = request.getHeader("token")
 
-		if (token == null) {
+		if (token != null) {
 
-			message = "\u001B[32m" + request.remoteAddr + "\u001B[0m[\u001B[35m"
-
+			message = "\u001B[32m" + request.remoteAddr + "\u001B[0m" + "[" + "[\u001B[35m" + token + "\u001B[0m]" + "]" + " --> " + "\u001B[36m" + request.method + "\u001B[34m" + request.requestURI + "\u001B[0m"
+			logger.info(message)
 		}
 
 		return true
