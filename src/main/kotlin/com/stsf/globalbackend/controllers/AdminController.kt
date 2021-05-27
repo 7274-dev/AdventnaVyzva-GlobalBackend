@@ -25,7 +25,7 @@ class AdminController(
     fun createStudent(@RequestHeader token: String, @RequestBody user: com.stsf.globalbackend.request.User): GenericResponse<User> {
         val authenticatedUser = authenticationService.getUserByToken(token)
 
-        if (!authenticatedUser.isTeacher) {
+        if (!authenticatedUser.isAdmin) {
             throw InsufficientPermissionsException()
         }
 
@@ -37,7 +37,7 @@ class AdminController(
     fun deleteStudent(@RequestHeader token: String, @RequestParam userId: Long): GenericResponse<String> {
         val authenticatedUser = authenticationService.getUserByToken(token)
 
-        if (!authenticatedUser.isTeacher) {
+        if (!authenticatedUser.isAdmin) {
             throw InsufficientPermissionsException()
         }
 
@@ -54,7 +54,7 @@ class AdminController(
     fun changeStudentPassword(@RequestHeader token: String, @RequestParam userId: Long, @RequestParam newPassword: String): GenericResponse<User> {
         val authenticatedUser = authenticationService.getUserByToken(token)
 
-        if (!authenticatedUser.isTeacher) {
+        if (!authenticatedUser.isAdmin) {
             throw InsufficientPermissionsException()
         }
 
@@ -69,7 +69,7 @@ class AdminController(
     fun createTeacher(@RequestHeader token: String, @RequestBody user: com.stsf.globalbackend.request.User): GenericResponse<User> {
         val authenticatedUser = authenticationService.getUserByToken(token)
 
-        if (!authenticatedUser.isTeacher) {
+        if (!authenticatedUser.isAdmin) {
             throw InsufficientPermissionsException()
         }
 
@@ -81,7 +81,7 @@ class AdminController(
     fun deleteTeacher(@RequestHeader token: String, @RequestParam userId: Long): GenericResponse<String> {
         val authenticatedUser = authenticationService.getUserByToken(token)
 
-        if (!authenticatedUser.isTeacher) {
+        if (!authenticatedUser.isAdmin) {
             throw InsufficientPermissionsException()
         }
 
@@ -97,7 +97,7 @@ class AdminController(
     fun changeTeacherPassword(@RequestHeader token: String, @RequestParam userId: Long, @RequestParam newPassword: String): GenericResponse<User> {
         val authenticatedUser = authenticationService.getUserByToken(token)
 
-        if (!authenticatedUser.isTeacher) {
+        if (!authenticatedUser.isAdmin) {
             throw InsufficientPermissionsException()
         }
 
@@ -108,4 +108,43 @@ class AdminController(
         return GenericResponse(adminService.changeUserPassword(userId, newPassword))
     }
 
+    fun createAdmin(@RequestHeader token: String, @RequestBody user: com.stsf.globalbackend.request.User): GenericResponse<User> {
+        val authenticatedUser = authenticationService.getUserByToken(token)
+
+        if (!authenticatedUser.isAdmin) {
+            throw InsufficientPermissionsException()
+        }
+
+        val (username, password, name) = user
+        return GenericResponse(adminService.createAdminAccount(username, password, name))
+    }
+
+    fun deleteAdmin(@RequestHeader token: String, @RequestParam userId: Long): GenericResponse<String> {
+        val authenticatedUser = authenticationService.getUserByToken(token)
+
+        if (!authenticatedUser.isAdmin) {
+            throw InsufficientPermissionsException()
+        }
+
+        if (!userService.isAdmin(userId)) {
+            throw NoSuchUserException()
+        }
+
+        adminService.deleteUser(userId)
+        return GenericResponse("Ok")
+    }
+
+    fun changeAdminPassword(@RequestHeader token: String, @RequestParam userId: Long, @RequestParam newPassword: String): GenericResponse<User> {
+        val authenticatedUser = authenticationService.getUserByToken(token)
+
+        if (!authenticatedUser.isAdmin) {
+            throw InsufficientPermissionsException()
+        }
+
+        if (!userService.isAdmin(userId)) {
+            throw NoSuchUserException()
+        }
+
+        return GenericResponse(adminService.changeUserPassword(userId, newPassword))
+    }
 }

@@ -12,5 +12,6 @@ data class User(
     var username: String,
     var password: String,
     var name: String,
-    var isTeacher: Boolean
+    var isTeacher: Boolean,
+    var isAdmin: Boolean,
 )
