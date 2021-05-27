@@ -22,10 +22,8 @@ class LoggingInterceptor : HandlerInterceptor {
 		 var message: String
 		 var token = request.getHeader("token")
 
-		if (token != null) {
-			message = "\u001B[32m" + request.remoteAddr + "\u001B[0m" + "[" + "[\u001B[35m" + token + "\u001B[0m]" + "]" + " --> " + "\u001B[36m" + request.method + "\u001B[34m" + request.requestURI + "\u001B[0m"
-			logger.info(message)
-		}
+		message = "\u001B[32m" + request.remoteAddr + "\u001B[0m" + "[" + "[\u001B[35m" + token + "\u001B[0m]" + "]" + " --> " + "\u001B[36m" + request.method + "\u001B[34m" + request.requestURI + "\u001B[0m"
+		logger.info(message)
 
 		return true
 	}
