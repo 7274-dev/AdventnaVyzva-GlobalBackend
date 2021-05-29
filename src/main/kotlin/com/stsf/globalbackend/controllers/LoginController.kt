@@ -45,6 +45,6 @@ class LoginController(
         if (!adminService.isUserDatabaseEmpty()) {
             throw InsufficientPermissionsException()
         }
-        return GenericResponse(adminService.createTeacherAccount(username, password, name))
+        return GenericResponse(adminService.createAdminAccount(username, password, name))
     }
 }
