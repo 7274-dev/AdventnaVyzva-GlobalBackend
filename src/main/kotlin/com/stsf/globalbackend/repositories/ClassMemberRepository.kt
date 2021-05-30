@@ -13,4 +13,7 @@ interface ClassMemberRepository : JpaRepository<ClassMember, Long> {
 
 	@Query("from ClassMember c where c.clazz.id = :id and c.user.id = :u_id")
 	fun findAllByClassAndUserId(@Param("id") classId: Long, @Param("u_id") userId: Long): List<ClassMember>
+
+	@Query("from ClassMember c where c.clazz.id = :id")
+	fun findAllByClassId(@Param("id") classId: Long): List<ClassMember>
 }

@@ -28,6 +28,8 @@ class LoginController(
 
         return if (authenticatedUser.isTeacher) {
             GenericResponse("teacher")
+        } else if (authenticatedUser.isAdmin) {
+            GenericResponse("admin")
         } else {
             GenericResponse("student")
         }

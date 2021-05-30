@@ -5,6 +5,7 @@ import com.stsf.globalbackend.exceptions.NoSuchClassException
 import com.stsf.globalbackend.exceptions.NoSuchUserException
 import com.stsf.globalbackend.models.Class
 import com.stsf.globalbackend.models.ClassMember
+import com.stsf.globalbackend.models.User
 import com.stsf.globalbackend.repositories.ClassMemberRepository
 import com.stsf.globalbackend.repositories.ClassRepository
 import com.stsf.globalbackend.repositories.UserRepository
@@ -51,6 +52,25 @@ class ClassService (
 		// Maybe do some black magic stuff and remove ClassMember?
 		classRepository.deleteById(classId)
 
+	}
+
+	// No Mapping!
+	fun getAllClasses(): List<Class> {
+		return classRepository.findAll()
+	}
+
+	// No Mapping!
+	// Maybe change return to UserID
+	fun getAllUsersInClass(classId: Long): List<User> {
+		val classMembers = classMemberRepository.findAllByClassId(classId)
+		val users: ArrayList<User> = ArrayList()
+
+		for (classMember in classMembers) {
+			if (!classMember.user.isTeacher && !classMember.user.isAdmin) {
+				users.add(classMember.user)
+			}
+		}
+		return users
 	}
 
 }
