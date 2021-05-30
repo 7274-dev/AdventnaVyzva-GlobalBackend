@@ -54,12 +54,12 @@ class ClassService (
 
 	}
 
-	// No Mapping!
+
 	fun getAllClasses(): List<Class> {
 		return classRepository.findAll()
 	}
 
-	// No Mapping!
+
 	// Maybe change return to UserID
 	fun getAllUsersInClass(classId: Long): List<User> {
 		val classMembers = classMemberRepository.findAllByClassId(classId)

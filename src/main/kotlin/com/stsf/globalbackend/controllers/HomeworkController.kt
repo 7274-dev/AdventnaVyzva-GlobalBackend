@@ -58,7 +58,14 @@ class HomeworkController (
 
 	@GetMapping("/class")
 	fun getHomeworkForClass(@RequestHeader token: String, @RequestParam classId: Long): GenericResponse<List<com.stsf.globalbackend.models.Homework>> {
+		// Shouldn't this check if the user is in class or if the user is a teacher?
 		return GenericResponse(homeworkService.getHomeworkByClass(classId))
+	}
+
+	@GetMapping("/student")
+	fun getHomeworkForStudent(@RequestHeader token: String, @RequestParam userId: Long): GenericResponse<List<com.stsf.globalbackend.models.Homework>> {
+		// Shouldn't this check if the user is in class or if the user is a teacher?
+		return GenericResponse(homeworkService.getAllHomeworksByStudent(userId))
 	}
 
 	@GetMapping("/date")
