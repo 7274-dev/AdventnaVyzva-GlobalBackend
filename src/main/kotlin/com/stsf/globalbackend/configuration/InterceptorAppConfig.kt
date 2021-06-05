@@ -10,5 +10,6 @@ class InterceptorAppConfig : WebMvcConfigurer {
     override fun addInterceptors(registry: InterceptorRegistry) {
         registry.addInterceptor(AuthenticationInterceptor())
             .addPathPatterns("/api/**") // authenticated paths here
+            .excludePathPatterns("/*")  // Test this
     }
 }
