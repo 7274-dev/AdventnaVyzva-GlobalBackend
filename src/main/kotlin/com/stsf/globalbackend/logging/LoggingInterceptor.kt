@@ -1,6 +1,8 @@
 package com.stsf.globalbackend.logging
 
 
+import com.andreapivetta.kolor.Color
+import com.andreapivetta.kolor.Kolor
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.web.servlet.HandlerInterceptor
@@ -22,10 +24,10 @@ class LoggingInterceptor : HandlerInterceptor {
 		 var message: String
 		 var token = request.getHeader("token")
 
-		message = "\u001B[32m" + request.remoteAddr + "\u001B[0m" + "[\u001B[35m" + token + "\u001B[0m]" + " --> " + "\u001B[36m" + request.method + " \u001b[33m " + request.requestURI + "\u001B[34m"
+		message = Kolor.foreground(request.requestURL.toString(), Color.GREEN) + " [" + Kolor.foreground(token, Color.MAGENTA) + "]  -->  " + Kolor.foreground(request.method, Color.CYAN) + " " + Kolor.foreground(request.method, Color.YELLOW)
 
 		if (request.requestURI.equals("/error")) {
-			message = "$message\\u001b[31m ERROR \\u001b[0m, could not process request"
+			message = Kolor.background("ERROR", Color.RED) + ", unable to process request"
 		}
 
 		logger.info(message)
