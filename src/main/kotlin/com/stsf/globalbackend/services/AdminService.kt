@@ -63,23 +63,27 @@ class AdminService(
         return userRepository.save(targetUser)
     }
 
-    private fun createUser(username: String, password: String? = null, name: String, isTeacher: Boolean): User {
+    private fun createUser(username: String, password: String? = null, name: String, isAdmin: Boolean, isTeacher: Boolean): User { // Maybe some more elegant solution
         var newPassword = password
         if (newPassword == null) {
             newPassword = generatePassword(8)
         }
 
-        val newUser = User(-1, username, newPassword, name, isTeacher)
+        val newUser = User(-1, username, newPassword, name, isTeacher, isAdmin)
 
         return userRepository.save(newUser)
     }
 
     fun createStudentUser(username: String, password: String? = null, name: String): User {
-        return createUser(username, password, name, false)
+        return createUser(username, password, name, false, false)
     }
 
     fun createTeacherAccount(username: String, password: String? = null, name: String): User {
-        return createUser(username, password, name, true)
+        return createUser(username, password, name, false, true)
+    }
+
+    fun createAdminAccount(username: String, password: String? = null, name: String): User {
+        return createUser(username, password, name, true, true)
     }
 
     fun deleteUser(userId: Long) {

@@ -28,6 +28,8 @@ class LoginController(
 
         return if (authenticatedUser.isTeacher) {
             GenericResponse("teacher")
+        } else if (authenticatedUser.isAdmin) {
+            GenericResponse("admin")
         } else {
             GenericResponse("student")
         }
@@ -45,6 +47,6 @@ class LoginController(
         if (!adminService.isUserDatabaseEmpty()) {
             throw InsufficientPermissionsException()
         }
-        return GenericResponse(adminService.createTeacherAccount(username, password, name))
+        return GenericResponse(adminService.createAdminAccount(username, password, name))
     }
 }

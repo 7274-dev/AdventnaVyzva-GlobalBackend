@@ -17,5 +17,11 @@ class UserService(
         return user.isTeacher
     }
 
+    fun isAdmin(userId: Long): Boolean {
+        val user = userRepository.findByIdOrNull(userId) ?: throw NoSuchUserException()
+
+        return user.isAdmin
+    }
+
     fun isStudent(userId: Long): Boolean = !isTeacher(userId)
 }

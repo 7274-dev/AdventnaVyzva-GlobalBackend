@@ -3,6 +3,7 @@ package com.stsf.globalbackend.controllers
 import com.stsf.globalbackend.exceptions.InsufficientPermissionsException
 import com.stsf.globalbackend.models.Class
 import com.stsf.globalbackend.models.ClassMember
+import com.stsf.globalbackend.models.User
 import com.stsf.globalbackend.request.GenericResponse
 import com.stsf.globalbackend.request.UserAndClassId
 import com.stsf.globalbackend.services.AuthenticationService
@@ -46,6 +47,17 @@ class ClazzController (@Autowired
 
 	}
 
+	@GetMapping("/class")
+	fun getAllClassesController(@RequestHeader token: String): GenericResponse<List<Class>> {
+		val authenticatedUser = authenticationService.getUserByToken(token)
+		val classes = classService.getAllClasses()
+
+		if (!authenticatedUser.isTeacher) {
+			throw InsufficientPermissionsException()
+		}
+		return GenericResponse(classes)
+	}
+
 	@PutMapping("/classMember")
 	fun addUserToClassController(@RequestHeader token: String, @RequestBody userAndClassId: UserAndClassId): GenericResponse<ClassMember> {
 
@@ -60,7 +72,7 @@ class ClazzController (@Autowired
 	}
 
 	@DeleteMapping("/classMember")
-	fun removeUserFromClass(@RequestHeader token: String, @RequestBody userAndClassId: UserAndClassId): GenericResponse<String> {
+	fun removeUserFromClassController(@RequestHeader token: String, @RequestBody userAndClassId: UserAndClassId): GenericResponse<String> {
 
 		val authenticatedUser = authenticationService.getUserByToken(token)
 
@@ -71,6 +83,18 @@ class ClazzController (@Autowired
 		classService.removeUserFromClass(userAndClassId.userId, userAndClassId.classId)
 
 		return GenericResponse("Ok")
+	}
+
+	@GetMapping("/classMember")
+	fun getAllUsersFromClassController(@RequestHeader token: String, @RequestParam classId: Long): GenericResponse<List<User>> {
+		val authenticatedUser = authenticationService.getUserByToken(token)
+		val users = classService.getAllUsersInClass(classId)
+
+		if (!authenticatedUser.isTeacher) {
+			throw InsufficientPermissionsException()
+		}
+
+		return GenericResponse(users)
 	}
 
 }
