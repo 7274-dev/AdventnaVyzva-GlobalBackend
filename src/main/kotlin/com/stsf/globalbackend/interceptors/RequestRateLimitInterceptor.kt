@@ -35,8 +35,14 @@ class RequestRateLimitInterceptor : HandlerInterceptor {
 	}
 
 	override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-												 // Do we need to return false if we send 401?
-		val token = (request.getHeader("token") ?: response.sendError(401)) as String
+
+		// Do we need to return false if we send 401?
+		val token = request.getHeader("token")
+
+		if (token.isNullOrBlank()) {
+			response.sendError(401)
+			return false
+		}
 
 		return getLimit(token)
 
