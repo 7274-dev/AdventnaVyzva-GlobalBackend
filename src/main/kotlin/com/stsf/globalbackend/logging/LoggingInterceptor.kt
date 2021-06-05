@@ -22,7 +22,12 @@ class LoggingInterceptor : HandlerInterceptor {
 		 var message: String
 		 var token = request.getHeader("token")
 
-		message = "\u001B[32m" + request.remoteAddr + "\u001B[0m" + "[" + "[\u001B[35m" + token + "\u001B[0m]" + "]" + " --> " + "\u001B[36m" + request.method + "\u001B[34m" + request.requestURI + "\u001B[0m"
+		message = "\u001B[32m" + request.remoteAddr + "\u001B[0m" + "[\u001B[35m" + token + "\u001B[0m]" + " --> " + "\u001B[36m" + request.method + " \u001b[33m " + request.requestURI + "\u001B[34m"
+
+		if (request.requestURI.equals("/error")) {
+			message = "$message\\u001b[31m ERROR \\u001b[0m, could not process request"
+		}
+
 		logger.info(message)
 
 		return true
