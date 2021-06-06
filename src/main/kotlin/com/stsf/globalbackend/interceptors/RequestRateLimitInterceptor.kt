@@ -10,41 +10,37 @@ import javax.servlet.http.HttpServletResponse
 class RequestRateLimitInterceptor : HandlerInterceptor {
 
 	companion object {
-		private val MAX_REQUESTS = 500
+		private const val MAX_REQUESTS = 100
 		private var cache: Cache<String, Int> = CacheBuilder.newBuilder()
-			.expireAfterWrite(Duration.ofHours(2))
+			.expireAfterAccess(Duration.ofSeconds(2))
 			.build()
 
-		private fun addRequest(token: String) {
+		private fun addRequest(token: String): Int {
 			val amountOfRequests = cache.getIfPresent(token)
-			// This can be simplified with ?:
-			if (amountOfRequests is Int) {
+
+			return if (amountOfRequests != null) {
 				cache.put(token, amountOfRequests + 1)
+				amountOfRequests + 1
 			} else {
 				cache.put(token, 1)
+				1
 			}
-
 		}
 
-		fun getLimit(token: String): Boolean {
-			// Ivicek will this work?
-			val amountOfRequests: Int = (cache.getIfPresent(token) ?: addRequest(token)) as Int
-			return amountOfRequests <= MAX_REQUESTS
-
+		fun isOverLimit(token: String): Boolean {
+			return addRequest(token) >= MAX_REQUESTS
 		}
 	}
 
 	override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
+		val token = request.getHeader("token") ?: return true
 
-		// Do we need to return false if we send 401?
-		val token = request.getHeader("token")
-
-		if (token.isNullOrBlank()) {
-			response.sendError(401)
+		if (isOverLimit(token)) {
+			response.sendError(429)
 			return false
 		}
 
-		return getLimit(token)
+		return true
 
 	}
 }

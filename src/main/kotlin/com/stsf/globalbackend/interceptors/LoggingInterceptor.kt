@@ -1,4 +1,4 @@
-package com.stsf.globalbackend.logging
+package com.stsf.globalbackend.interceptors
 
 
 import com.andreapivetta.kolor.Color
