@@ -13,19 +13,12 @@ class InterceptorAppConfig : WebMvcConfigurer {
         // Authentication Interceptor
         registry.addInterceptor(AuthenticationInterceptor())
             .addPathPatterns("/api/**") // authenticated paths here
-
-            .excludePathPatterns("/api/register")
-            .excludePathPatterns("/api/login")// STOPSHIP: this is a temporary solution, move this to Auth Interceptor
-
+            
         registry.addInterceptor(RequestRateLimitInterceptor())
             .addPathPatterns("/**")
 
         // Logging Interceptor
         registry.addInterceptor(LoggingInterceptor())
             .addPathPatterns("/**")
-            // Maybe .excludePatterns("/api/login")?
-
-
-
     }
 }
