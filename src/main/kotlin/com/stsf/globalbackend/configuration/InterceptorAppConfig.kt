@@ -22,8 +22,8 @@ class InterceptorAppConfig : WebMvcConfigurer {
             .addPathPatterns("/**")
             // Maybe .excludePatterns("/api/login")?
 
-        registry.addInterceptor(RequestRateLimitInterceptor())
-            .addPathPatterns("/**")
+//        registry.addInterceptor(RequestRateLimitInterceptor())
+//            .addPathPatterns("/**")
 
     }
 }
