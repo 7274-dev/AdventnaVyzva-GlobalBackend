@@ -9,7 +9,7 @@ import com.stsf.globalbackend.services.AuthenticationService
 import com.stsf.globalbackend.services.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
-
+// TODO: Add a mapping to change a user's own password
 @RestController
 @RequestMapping("/api/admin")
 class AdminController(
