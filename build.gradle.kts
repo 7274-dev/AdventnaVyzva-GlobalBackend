@@ -18,6 +18,16 @@ configurations {
     }
 }
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+
+//    dependencies {
+//        classpath("org.jetbrains.kotlin:kotlin-stdlib:1.4.32")
+//    }
+}
+
 repositories {
     mavenCentral()
     jcenter()
@@ -36,6 +46,9 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    implementation("org.jetbrains:markdown:0.1.45")
+
+
 }
 
 tasks.withType<KotlinCompile> {

@@ -6,6 +6,7 @@ import com.stsf.globalbackend.exceptions.InsufficientPermissionsException
 import com.stsf.globalbackend.request.*
 import com.stsf.globalbackend.services.AuthenticationService
 import com.stsf.globalbackend.services.HomeworkService
+import com.stsf.globalbackend.services.MarkdownService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import java.util.*
@@ -16,7 +17,9 @@ class HomeworkController (
 	@Autowired
 	private val auth: AuthenticationService,
 	@Autowired
-	private val homeworkService: HomeworkService
+	private val homeworkService: HomeworkService,
+	@Autowired
+	private val markdownService: MarkdownService
 ) {
 
 	@PutMapping("/")
@@ -26,6 +29,8 @@ class HomeworkController (
 		if (!authenticatedUser.isTeacher) {
 			throw InsufficientPermissionsException()
 		}
+
+		homework.text = markdownService.markdownToHTML(homework.text)
 
 		return GenericResponse(homeworkService.createHomework(homework))
 	}
@@ -51,6 +56,8 @@ class HomeworkController (
 		if (!authenticatedUser.isTeacher) {
 			throw InsufficientPermissionsException()
 		}
+
+		homework.text = markdownService.markdownToHTML(homework.text)
 
 		return GenericResponse(homeworkService.createHomework(homework))
 
