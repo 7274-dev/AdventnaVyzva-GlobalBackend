@@ -53,8 +53,8 @@ class AdminController(
     @PatchMapping("/student")
     fun changeStudentPassword(@RequestHeader token: String, @RequestParam userId: Long, @RequestParam newPassword: String): GenericResponse<User> {
         val authenticatedUser = authenticationService.getUserByToken(token)
-
-        if (!authenticatedUser.isAdmin) {
+        // DONE: Add .isTeacher, so teacher can change students password
+        if (!authenticatedUser.isAdmin || !authenticatedUser.isTeacher) {
             throw InsufficientPermissionsException()
         }
 
@@ -96,8 +96,8 @@ class AdminController(
     @PatchMapping("/teacher")
     fun changeTeacherPassword(@RequestHeader token: String, @RequestParam userId: Long, @RequestParam newPassword: String): GenericResponse<User> {
         val authenticatedUser = authenticationService.getUserByToken(token)
-
-        if (!authenticatedUser.isAdmin) {
+                                        // Debatable, but i think that teacher should be able to change his own password
+        if (!authenticatedUser.isAdmin || authenticatedUser.id == userId) {
             throw InsufficientPermissionsException()
         }
 
@@ -136,7 +136,7 @@ class AdminController(
 
     fun changeAdminPassword(@RequestHeader token: String, @RequestParam userId: Long, @RequestParam newPassword: String): GenericResponse<User> {
         val authenticatedUser = authenticationService.getUserByToken(token)
-
+                                // Maybe make it so that another admin cant change someone else's password
         if (!authenticatedUser.isAdmin) {
             throw InsufficientPermissionsException()
         }

@@ -1,5 +1,6 @@
 package com.stsf.globalbackend.models
 
+import java.util.*
 import javax.persistence.*
 
 @Entity
@@ -9,5 +10,9 @@ data class HomeworkAttachment(
     val id: Long,
 
     @ManyToOne
-    val homework: Homework
+    val homework: Homework,
+
+    @OneToOne
+    val file: File
+    // Dis fine?
 )
