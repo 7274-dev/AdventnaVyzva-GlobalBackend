@@ -36,7 +36,7 @@ class RequestRateLimitInterceptor : HandlerInterceptor {
 		val token = request.getHeader("token") ?: return true
 
 		if (isOverLimit(token)) {
-			response.sendError(429)
+			response.sendError(418) // I'm a teapot
 			return false
 		}
 

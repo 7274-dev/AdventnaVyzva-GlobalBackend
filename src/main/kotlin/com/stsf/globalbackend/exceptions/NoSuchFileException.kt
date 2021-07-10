@@ -1,3 +1,3 @@
 package com.stsf.globalbackend.exceptions
 
-class NoSuchFileException : Exception("No such file")
+class NoSuchFileException : NoSuchException("No such file")
