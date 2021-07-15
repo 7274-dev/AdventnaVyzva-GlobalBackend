@@ -108,17 +108,22 @@ class AdminController(
         return GenericResponse(adminService.changeUserPassword(userId, newPassword))
     }
 
+    @PutMapping("/create")
     fun createAdmin(@RequestHeader token: String, @RequestBody user: com.stsf.globalbackend.request.User): GenericResponse<User> {
-        val authenticatedUser = authenticationService.getUserByToken(token)
+        if (!adminService.isUserDatabaseEmpty()) {
+            val authenticatedUser = authenticationService.getUserByToken(token)
 
-        if (!authenticatedUser.isAdmin) {
-            throw InsufficientPermissionsException()
+            if (!authenticatedUser.isAdmin) {
+                throw InsufficientPermissionsException()
+            }
         }
+
 
         val (username, password, name) = user
         return GenericResponse(adminService.createAdminAccount(username, password, name))
     }
 
+    @DeleteMapping("/delete")
     fun deleteAdmin(@RequestHeader token: String, @RequestParam userId: Long): GenericResponse<String> {
         val authenticatedUser = authenticationService.getUserByToken(token)
 
@@ -134,6 +139,7 @@ class AdminController(
         return GenericResponse("Ok")
     }
 
+    @PatchMapping("/change")
     fun changeAdminPassword(@RequestHeader token: String, @RequestParam userId: Long, @RequestParam newPassword: String): GenericResponse<User> {
         val authenticatedUser = authenticationService.getUserByToken(token)
 

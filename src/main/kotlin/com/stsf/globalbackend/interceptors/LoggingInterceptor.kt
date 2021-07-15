@@ -12,19 +12,17 @@ import javax.servlet.http.HttpServletResponse
 
 class LoggingInterceptor : HandlerInterceptor {
 
-	val logger: Logger = LoggerFactory.getLogger(LoggingInterceptor::class.java)
+	private val logger: Logger = LoggerFactory.getLogger(LoggingInterceptor::class.java)
 
 	override fun postHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any, modelAndView: ModelAndView?) {
-		var message: String
 
-		if (response.status >= 500) {
-			message = "[${Kolor.foreground("ERROR", Color.RED)}] Status code: ${response.status}"
-		}
-		else {
-			message = "[${Kolor.foreground("OK", Color.GREEN)}] Status code: ${response.status}"
+		val message: String = if (response.status >= 500) {
+			"[${Kolor.foreground("ERROR", Color.RED)}] Status code: ${response.status}"
+		} else {
+			"[${Kolor.foreground("OK", Color.GREEN)}] Status code: ${response.status}"
 		}
 
-		println(message)
+		logger.info(message)
 	}
 
 	override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
