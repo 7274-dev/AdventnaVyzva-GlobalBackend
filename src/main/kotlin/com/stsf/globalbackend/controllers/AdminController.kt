@@ -1,5 +1,6 @@
 package com.stsf.globalbackend.controllers
 
+import com.stsf.globalbackend.exceptions.BadTokenException
 import com.stsf.globalbackend.exceptions.InsufficientPermissionsException
 import com.stsf.globalbackend.exceptions.NoSuchUserException
 import com.stsf.globalbackend.models.User
@@ -109,8 +110,11 @@ class AdminController(
     }
 
     @PutMapping("/create")
-    fun createAdmin(@RequestHeader token: String, @RequestBody user: com.stsf.globalbackend.request.User): GenericResponse<User> {
+    fun createAdmin(@RequestHeader token: String?, @RequestBody user: com.stsf.globalbackend.request.User): GenericResponse<User> {
         if (!adminService.isUserDatabaseEmpty()) {
+            if (token == null) {
+                throw BadTokenException()
+            }
             val authenticatedUser = authenticationService.getUserByToken(token)
 
             if (!authenticatedUser.isAdmin) {
