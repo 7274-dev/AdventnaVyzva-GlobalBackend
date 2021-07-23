@@ -49,6 +49,7 @@ class ClazzController (@Autowired
 
 	@GetMapping("/class")
 	fun getAllClassesController(@RequestHeader token: String): GenericResponse<List<Class>> {
+		// TODO: Add a check so that we only return user-owned classes
 		val authenticatedUser = authenticationService.getUserByToken(token)
 		val classes = classService.getAllClasses()
 
