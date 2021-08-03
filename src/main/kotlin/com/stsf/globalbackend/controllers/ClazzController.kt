@@ -32,7 +32,7 @@ class ClazzController (@Autowired
 
 	}
 
-	// Wont this cause problems?
+	// Won't this cause problems?
 	@DeleteMapping("/class")
 	fun deleteClassController(@RequestHeader token: String, @RequestParam classId: Long): GenericResponse<String> {
 
@@ -47,17 +47,17 @@ class ClazzController (@Autowired
 
 	}
 
-	@GetMapping("/class")
-	fun getAllClassesController(@RequestHeader token: String): GenericResponse<List<Class>> {
-		// TODO: Add a check so that we only return user-owned classes
-		val authenticatedUser = authenticationService.getUserByToken(token)
-		val classes = classService.getAllClasses()
-
-		if (!authenticatedUser.isTeacher) {
-			throw InsufficientPermissionsException()
-		}
-		return GenericResponse(classes)
-	}
+//	@GetMapping("/class")
+//	fun getAllClassesController(@RequestHeader token: String): GenericResponse<List<Class>> {
+//
+//		val authenticatedUser = authenticationService.getUserByToken(token)
+//		val classes = classService.getAllClasses()
+//
+//		if (!authenticatedUser.isTeacher) {
+//			throw InsufficientPermissionsException()
+//		}
+//		return GenericResponse(classes)
+//	}
 
 	@PutMapping("/classMember")
 	fun addUserToClassController(@RequestHeader token: String, @RequestBody userAndClassId: UserAndClassId): GenericResponse<ClassMember> {

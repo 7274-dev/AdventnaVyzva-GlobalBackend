@@ -1,3 +1,5 @@
+@file:Suppress("SpellCheckingInspection")
+
 package com.stsf.globalbackend.services
 
 import com.stsf.globalbackend.exceptions.NoSuchClassException
