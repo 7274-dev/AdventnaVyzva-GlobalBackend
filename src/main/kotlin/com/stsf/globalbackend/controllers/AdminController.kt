@@ -23,7 +23,7 @@ class AdminController(
 ) {
 
     @GetMapping("/student")
-    fun getStudentData(@RequestHeader token: String, @RequestParam studentID: Long): GenericResponse<User?> {
+    fun getStudentData(@RequestHeader token: String, @RequestParam studentID: Long): GenericResponse<User> {
         val authenticatedUser = authenticationService.getUserByToken(token)
 
         if (!authenticatedUser.isAdmin) {
@@ -32,7 +32,7 @@ class AdminController(
 
         val student = adminService.getStudentData(studentID)
 
-        if (student != null && (student.isTeacher || student.isAdmin)) {
+        if (student.isTeacher || student.isAdmin) {
             throw InsufficientPermissionsException()
         }
 
