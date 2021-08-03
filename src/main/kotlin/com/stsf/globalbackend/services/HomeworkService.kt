@@ -56,7 +56,6 @@ class HomeworkService (
 			if (hw.fromDate.after(today)) {
 				output.add(hw)
 			}
-
 		}
 
 		return output

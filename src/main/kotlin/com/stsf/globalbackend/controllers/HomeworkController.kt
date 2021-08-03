@@ -15,7 +15,7 @@ import java.util.*
 @RequestMapping("/api/homework")
 class HomeworkController (
 	@Autowired
-	private val authenticationService: AuthenticationService,
+	private val auth: AuthenticationService,
 	@Autowired
 	private val homeworkService: HomeworkService,
 	@Autowired
@@ -24,7 +24,7 @@ class HomeworkController (
 
 	@GetMapping("/admin")
 	fun getHomeworkForAdmin(@RequestHeader token: String, @RequestParam homeworkId: Long): GenericResponse<com.stsf.globalbackend.models.Homework> {
-		val authenticatedUser = authenticationService.getUserByToken(token)
+		val authenticatedUser = auth.getUserByToken(token)
 
 		if (!authenticatedUser.isAdmin) {
 			throw InsufficientPermissionsException()
@@ -35,7 +35,7 @@ class HomeworkController (
 
 	@PutMapping("/")
 	fun addHomework(@RequestHeader token: String, @RequestBody homework: Homework): GenericResponse<com.stsf.globalbackend.models.Homework> {
-		val authenticatedUser = authenticationService.getUserByToken(token)
+		val authenticatedUser = auth.getUserByToken(token)
 
 		if (!authenticatedUser.isTeacher) {
 			throw InsufficientPermissionsException()
@@ -48,7 +48,7 @@ class HomeworkController (
 
 	@DeleteMapping("/")
 	fun deleteHomework(@RequestHeader token: String, @RequestParam homeworkId: Long): GenericResponse<String> {
-		val authenticatedUser = authenticationService.getUserByToken(token)
+		val authenticatedUser = auth.getUserByToken(token)
 
 		if (!authenticatedUser.isTeacher) {
 			throw InsufficientPermissionsException()
@@ -62,7 +62,7 @@ class HomeworkController (
 	// FIXME
 	@PatchMapping("/")
 	fun editHomework(@RequestHeader token: String, @RequestBody homework: Homework): GenericResponse<com.stsf.globalbackend.models.Homework> {
-		val authenticatedUser = authenticationService.getUserByToken(token)
+		val authenticatedUser = auth.getUserByToken(token)
 
 		if (!authenticatedUser.isTeacher) {
 			throw InsufficientPermissionsException()
