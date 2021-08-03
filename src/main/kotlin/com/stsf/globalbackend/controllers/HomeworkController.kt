@@ -6,6 +6,7 @@ import com.stsf.globalbackend.exceptions.InsufficientPermissionsException
 import com.stsf.globalbackend.request.*
 import com.stsf.globalbackend.services.AuthenticationService
 import com.stsf.globalbackend.services.HomeworkService
+import com.stsf.globalbackend.services.MarkdownService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import java.util.*
@@ -16,7 +17,9 @@ class HomeworkController (
 	@Autowired
 	private val auth: AuthenticationService,
 	@Autowired
-	private val homeworkService: HomeworkService
+	private val homeworkService: HomeworkService,
+	@Autowired
+	private val markdownService: MarkdownService
 ) {
 
 	@PutMapping("/")
@@ -26,6 +29,8 @@ class HomeworkController (
 		if (!authenticatedUser.isTeacher) {
 			throw InsufficientPermissionsException()
 		}
+
+		homework.text = markdownService.markdownToHTML(homework.text)
 
 		return GenericResponse(homeworkService.createHomework(homework))
 	}
@@ -52,19 +57,21 @@ class HomeworkController (
 			throw InsufficientPermissionsException()
 		}
 
+		homework.text = markdownService.markdownToHTML(homework.text)
+
 		return GenericResponse(homeworkService.createHomework(homework))
 
 	}
 
 	@GetMapping("/class")
 	fun getHomeworkForClass(@RequestHeader token: String, @RequestParam classId: Long): GenericResponse<List<com.stsf.globalbackend.models.Homework>> {
-		// Shouldn't this check if the user is in class or if the user is a teacher?
+		// TODO: Add checks to see if user has access to this homework
 		return GenericResponse(homeworkService.getHomeworkByClass(classId))
 	}
 
 	@GetMapping("/student")
 	fun getHomeworkForStudent(@RequestHeader token: String, @RequestParam userId: Long): GenericResponse<List<com.stsf.globalbackend.models.Homework>> {
-		// Shouldn't this check if the user is in class or if the user is a teacher?
+		// TODO: Same here
 		return GenericResponse(homeworkService.getAllHomeworksByStudent(userId))
 	}
 
