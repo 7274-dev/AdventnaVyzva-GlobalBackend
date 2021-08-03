@@ -32,6 +32,7 @@ class SearchService(
     fun searchUserByName(query: String): List<Long> {
         val output: MutableList<Long> = mutableListOf()
 
+        // TODO: why tf is this case sensitive -> fix
         val foundUsers = userRepository.findAllByNameContains(query)
 
         for (user in foundUsers) {
