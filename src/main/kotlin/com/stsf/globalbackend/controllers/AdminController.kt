@@ -30,9 +30,13 @@ class AdminController(
             throw InsufficientPermissionsException()
         }
 
-        // TODO: perhaps we don't want to return data about teachers/admins
+        val student = adminService.getStudentData(studentID)
 
-        return GenericResponse(adminService.getStudentData(studentID))
+        if (student != null && (student.isTeacher || student.isAdmin)) {
+            throw InsufficientPermissionsException()
+        }
+
+        return GenericResponse(student)
     }
 
     @PutMapping("/student")
