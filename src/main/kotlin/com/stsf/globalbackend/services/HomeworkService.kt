@@ -1,6 +1,7 @@
 package com.stsf.globalbackend.services
 
 import com.stsf.globalbackend.exceptions.NoSuchClassException
+import com.stsf.globalbackend.exceptions.NoSuchHomeworkException
 import com.stsf.globalbackend.models.Class
 import com.stsf.globalbackend.models.ClassMember
 import com.stsf.globalbackend.models.Homework
@@ -38,7 +39,6 @@ class HomeworkService (
 
 		return homeworks
 	}
-
 
 	fun getHomeworkByClass(classId: Long): List<Homework> {
 		val clazz = classRepository.findByIdOrNull(classId) ?: throw NoSuchClassException()
@@ -94,4 +94,7 @@ class HomeworkService (
 		homeworkRepository.deleteById(homeworkId)
 	}
 
+	fun getHomeworkData(homeworkId: Long): Homework {
+		return homeworkRepository.findByIdOrNull(homeworkId) ?: throw NoSuchHomeworkException()
+	}
 }
