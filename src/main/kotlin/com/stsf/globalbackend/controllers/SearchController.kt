@@ -17,9 +17,11 @@ class SearchController(
     private val searchService: SearchService
 ) {
 
+    // We should check for permissions
+
     @GetMapping("/class")
     fun searchClassesByName(@RequestParam query: String): GenericResponse<List<Class>> {
-        return GenericResponse(searchService.searchClassByName(query))
+    return GenericResponse(searchService.searchClassByName(query))
     }
 
     @GetMapping("/homework/title")
