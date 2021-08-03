@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface HomeworkRepository : JpaRepository<Homework, Long> {
 	fun findAllByClazz(clazz: Class): List<Homework>
-	fun findAllByTextContains(s: String): List<Homework>
-	fun findAllByTitleContains(s: String): List<Homework>
-	fun findAllByTitleContainsOrTextContains(s: String, s1: String = s): List<Homework>
+	fun findAllByTextContainsIgnoreCase(s: String): List<Homework>
+	fun findAllByTitleContainsIgnoreCase(s: String): List<Homework>
+	fun findAllByTitleContainsOrTextContainsIgnoreCase(s: String, s1: String = s): List<Homework>
 }

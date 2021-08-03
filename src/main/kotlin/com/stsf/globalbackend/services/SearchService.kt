@@ -18,22 +18,21 @@ class SearchService(
     private val userRepository: UserRepository
 ) {
     fun searchHomeworkByTitle(query: String): List<Homework> {
-        return homeworkRepository.findAllByTitleContains(query)
+        return homeworkRepository.findAllByTitleContainsIgnoreCase(query)
     }
 
     fun searchHomeworkByText(query: String): List<Homework> {
-        return homeworkRepository.findAllByTextContains(query)
+        return homeworkRepository.findAllByTextContainsIgnoreCase(query)
     }
 
     fun searchHomeworkByAnyText(query: String): List<Homework> {
-        return homeworkRepository.findAllByTitleContainsOrTextContains(query)
+        return homeworkRepository.findAllByTitleContainsOrTextContainsIgnoreCase(query)
     }
 
     fun searchUserByName(query: String): List<Long> {
         val output: MutableList<Long> = mutableListOf()
 
-        // TODO: why tf is this case sensitive -> fix
-        val foundUsers = userRepository.findAllByNameContains(query)
+        val foundUsers = userRepository.findAllByNameContainsIgnoreCase(query)
 
         for (user in foundUsers) {
             output.add(user.id)
@@ -43,6 +42,6 @@ class SearchService(
     }
 
     fun searchClassByName(query: String): List<Class> {
-        return classRepository.findAllByName(query)
+        return classRepository.findAllByNameIgnoreCase(query)
     }
 }
