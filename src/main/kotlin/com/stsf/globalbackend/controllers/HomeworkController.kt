@@ -22,8 +22,8 @@ class HomeworkController (
 	private val markdownService: MarkdownService
 ) {
 
-	@GetMapping("/")
-	fun getHomeworkData(@RequestHeader token: String, @RequestParam homeworkId: Long): GenericResponse<com.stsf.globalbackend.models.Homework> {
+	@GetMapping("/admin")
+	fun getHomeworkForAdmin(@RequestHeader token: String, @RequestParam homeworkId: Long): GenericResponse<com.stsf.globalbackend.models.Homework> {
 		val authenticatedUser = authenticationService.getUserByToken(token)
 
 		if (!authenticatedUser.isAdmin) {
