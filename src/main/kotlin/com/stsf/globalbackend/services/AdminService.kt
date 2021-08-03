@@ -90,7 +90,7 @@ class AdminService(
         userRepository.deleteById(userId)
     }
 
-    fun getStudentData(studentID: Long): User {
-        return userRepository.findByIdOrNull(studentID) ?: throw NoSuchUserException()
+    fun getStudentData(studentId: Long): User {
+        return userRepository.findByIdOrNull(studentId) ?: throw NoSuchUserException()
     }
 }

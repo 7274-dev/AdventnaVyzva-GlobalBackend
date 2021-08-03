@@ -22,6 +22,17 @@ class HomeworkController (
 	private val markdownService: MarkdownService
 ) {
 
+	@GetMapping("/admin")
+	fun getHomeworkForAdmin(@RequestHeader token: String, @RequestParam homeworkId: Long): GenericResponse<com.stsf.globalbackend.models.Homework> {
+		val authenticatedUser = auth.getUserByToken(token)
+
+		if (!authenticatedUser.isAdmin) {
+			throw InsufficientPermissionsException()
+		}
+
+		return GenericResponse(homeworkService.getHomeworkData(homeworkId))
+	}
+
 	@PutMapping("/")
 	fun addHomework(@RequestHeader token: String, @RequestBody homework: Homework): GenericResponse<com.stsf.globalbackend.models.Homework> {
 		val authenticatedUser = auth.getUserByToken(token)
