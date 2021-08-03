@@ -22,6 +22,19 @@ class AdminController(
     private val userService: UserService
 ) {
 
+    @GetMapping("/student")
+    fun getStudentData(@RequestHeader token: String, @RequestParam studentID: Long): GenericResponse<User?> {
+        val authenticatedUser = authenticationService.getUserByToken(token)
+
+        if (!authenticatedUser.isAdmin) {
+            throw InsufficientPermissionsException()
+        }
+
+        // TODO: perhaps we don't want to return data about teachers/admins
+
+        return GenericResponse(adminService.getStudentData(studentID))
+    }
+
     @PutMapping("/student")
     fun createStudent(@RequestHeader token: String, @RequestBody user: com.stsf.globalbackend.request.User): GenericResponse<User> {
         val authenticatedUser = authenticationService.getUserByToken(token)
