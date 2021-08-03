@@ -53,4 +53,9 @@ class LoginController(
         }
         return GenericResponse(adminService.createAdminAccount(username, password, name))
     }
+
+    @GetMapping("/id")
+    fun getIdByToken(@RequestHeader token: String): GenericResponse<Long> {
+        return GenericResponse(authenticationService.getUserByToken(token).id)
+    }
 }
