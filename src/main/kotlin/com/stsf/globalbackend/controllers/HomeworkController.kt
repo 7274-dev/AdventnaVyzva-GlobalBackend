@@ -53,7 +53,7 @@ class HomeworkController (
 		if (!authenticatedUser.isTeacher) {
 			throw InsufficientPermissionsException()
 		}
-
+		// TODO: Check if teacher owns the class that the homework is assigned to
 		homeworkService.deleteHomework(homeworkId)
 
 		return GenericResponse("Ok")
@@ -67,7 +67,7 @@ class HomeworkController (
 		if (!authenticatedUser.isTeacher) {
 			throw InsufficientPermissionsException()
 		}
-
+		// TODO: Check if teacher owns the class that the homework is assigned to
 		homework.text = markdownService.markdownToHTML(homework.text)
 
 		return GenericResponse(homeworkService.createHomework(homework))
@@ -95,6 +95,7 @@ class HomeworkController (
 		@RequestParam
 		classId: Long
 	): GenericResponse<List<com.stsf.globalbackend.models.Homework>> {
+			// TODO: Check if user has access to this homework
 			return GenericResponse(homeworkService.getHomeworkByDateAndClass(classId, date))
 	}
 }

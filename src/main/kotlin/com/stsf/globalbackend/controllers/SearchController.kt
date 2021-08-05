@@ -21,21 +21,24 @@ class SearchController(
 
     @GetMapping("/class")
     fun searchClassesByName(@RequestParam query: String): GenericResponse<List<Class>> {
-    return GenericResponse(searchService.searchClassByName(query))
+        return GenericResponse(searchService.searchClassByName(query))
     }
 
     @GetMapping("/homework/title")
     fun searchHomeworkByTitle(@RequestParam query: String): GenericResponse<List<Homework>> {
+        // TODO: Check user for his class
         return GenericResponse(searchService.searchHomeworkByTitle(query))
     }
 
     @GetMapping("/homework/text")
     fun searchHomeworkByText(@RequestParam query: String): GenericResponse<List<Homework>> {
+        // TODO: Check user for his class
         return GenericResponse(searchService.searchHomeworkByText(query))
     }
 
     @GetMapping("/homework/any")
     fun searchHomeworkByAnyText(@RequestParam query: String): GenericResponse<List<Homework>> {
+        // TODO: Check user for his class
         return GenericResponse(searchService.searchHomeworkByAnyText(query))
     }
 
