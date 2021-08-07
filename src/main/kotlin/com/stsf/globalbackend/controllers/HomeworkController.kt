@@ -4,9 +4,7 @@ package com.stsf.globalbackend.controllers
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.stsf.globalbackend.exceptions.InsufficientPermissionsException
 import com.stsf.globalbackend.request.*
-import com.stsf.globalbackend.services.AuthenticationService
-import com.stsf.globalbackend.services.HomeworkService
-import com.stsf.globalbackend.services.MarkdownService
+import com.stsf.globalbackend.services.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import java.util.*
@@ -19,7 +17,9 @@ class HomeworkController (
 	@Autowired
 	private val homeworkService: HomeworkService,
 	@Autowired
-	private val markdownService: MarkdownService
+	private val markdownService: MarkdownService,
+	@Autowired
+	private val classService: ClassService,
 ) {
 
 	@GetMapping("/admin")
@@ -50,12 +50,18 @@ class HomeworkController (
 	fun deleteHomework(@RequestHeader token: String, @RequestParam homeworkId: Long): GenericResponse<String> {
 		val authenticatedUser = auth.getUserByToken(token)
 
-		if (!authenticatedUser.isTeacher) {
+		var userHasAccessToHomework = classService.getAllUsersInClass(homeworkService.getHomeworkData(homeworkId).clazz.id)
+			.contains(authenticatedUser)
+
+		if (authenticatedUser.isAdmin) {
+			userHasAccessToHomework = true
+		}
+
+		if (!authenticatedUser.isTeacher || !userHasAccessToHomework) {
 			throw InsufficientPermissionsException()
 		}
-		// TODO: Check if teacher owns the class that the homework is assigned to
+		// DONE: Check if teacher owns the class that the homework is assigned to
 		homeworkService.deleteHomework(homeworkId)
-
 		return GenericResponse("Ok")
 	}
 
@@ -76,13 +82,28 @@ class HomeworkController (
 
 	@GetMapping("/class")
 	fun getHomeworkForClass(@RequestHeader token: String, @RequestParam classId: Long): GenericResponse<List<com.stsf.globalbackend.models.Homework>> {
-		// TODO: Add checks to see if user has access to this homework
+		val authenticatedUser = auth.getUserByToken(token)
+		var userHasAccessToHomework = classService.getAllUsersInClass(classId).contains(authenticatedUser)
+
+		if (authenticatedUser.isAdmin) {
+			userHasAccessToHomework = true
+		}
+
+		if (!userHasAccessToHomework) {
+			throw InsufficientPermissionsException()
+		}
+
 		return GenericResponse(homeworkService.getHomeworkByClass(classId))
 	}
 
 	@GetMapping("/student")
 	fun getHomeworkForStudent(@RequestHeader token: String, @RequestParam userId: Long): GenericResponse<List<com.stsf.globalbackend.models.Homework>> {
-		// TODO: Same here
+		val authenticatedUser = auth.getUserByToken(token)
+
+		// Do we want to allow admins to view homeworks also on this URI?
+		if (authenticatedUser.id != userId) {
+			throw InsufficientPermissionsException()
+		}
 		return GenericResponse(homeworkService.getAllHomeworksByStudent(userId))
 	}
 
@@ -95,7 +116,17 @@ class HomeworkController (
 		@RequestParam
 		classId: Long
 	): GenericResponse<List<com.stsf.globalbackend.models.Homework>> {
-			// TODO: Check if user has access to this homework
-			return GenericResponse(homeworkService.getHomeworkByDateAndClass(classId, date))
+		val authenticatedUser = auth.getUserByToken(token)
+		var userHasAccessToHomework = classService.getAllUsersInClass(classId).contains(authenticatedUser)
+
+		if (authenticatedUser.isAdmin)  {
+			userHasAccessToHomework = true
+		}
+
+		if (!userHasAccessToHomework) {
+			throw InsufficientPermissionsException()
+		}
+
+		return GenericResponse(homeworkService.getHomeworkByDateAndClass(classId, date))
 	}
 }

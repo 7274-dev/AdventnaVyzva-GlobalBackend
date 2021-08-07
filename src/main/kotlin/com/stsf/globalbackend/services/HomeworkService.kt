@@ -92,6 +92,7 @@ class HomeworkService (
 	}
 
 	fun deleteHomework(homeworkId: Long) {
+		// TODO: Remove all associated files
 		homeworkRepository.deleteById(homeworkId)
 	}
 
