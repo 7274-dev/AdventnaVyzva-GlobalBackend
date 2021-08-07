@@ -42,7 +42,7 @@ class ClazzController (@Autowired
 			isUserInClass = true
 		}
 
-		if (!authenticatedUser.isTeacher && !isUserInClass) {
+		if (!authenticatedUser.isTeacher || !isUserInClass) {
 			throw InsufficientPermissionsException()
 		}
 
@@ -76,7 +76,7 @@ class ClazzController (@Autowired
 			isUserInClass = true
 		}
 
-		if ((!authenticatedUser.isTeacher && !isUserInClass) || !isClassEmpty) {
+		if (!authenticatedUser.isTeacher || !isUserInClass || !isClassEmpty) {
 			throw InsufficientPermissionsException()
 		}
 
@@ -95,7 +95,7 @@ class ClazzController (@Autowired
 			isUserInClass = true
 		}
 
-		if (!authenticatedUser.isTeacher && !isUserInClass) {
+		if (!authenticatedUser.isTeacher || !isUserInClass) {
 			throw InsufficientPermissionsException()
 		}
 
@@ -115,7 +115,7 @@ class ClazzController (@Autowired
 			isUserInClass = true
 		}
 
-		if (!authenticatedUser.isTeacher && !isUserInClass) {
+		if (!authenticatedUser.isTeacher || !isUserInClass) {
 			throw InsufficientPermissionsException()
 		}
 
