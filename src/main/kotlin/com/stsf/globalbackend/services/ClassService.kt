@@ -41,14 +41,15 @@ class ClassService (
 	fun createClass(className: String): Class {
 
 		// Since we've (ivicek) decided that there can be classes with same name, check is useless
-		var newClass = Class(-1, className)
+		val newClass = Class(-1, className)
 		return classRepository.save(newClass)
 
 	}
 
 	fun deleteClass(classId: Long) {
 
-		//TODO: Maybe do some black magic stuff and remove ClassMember?
+		//DONE: Maybe do some black magic stuff and remove ClassMember?
+		classMemberRepository.deleteInBatch(classMemberRepository.findAllByClassId(classId))
 		classRepository.deleteById(classId)
 
 	}
