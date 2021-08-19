@@ -37,7 +37,7 @@ class AdminController(
 
         return GenericResponse(student)
     }
-
+    // TODO: Add a check against a db of most used passwords
     @PutMapping("/student")
     fun createStudent(@RequestHeader token: String, @RequestBody user: com.stsf.globalbackend.request.User): GenericResponse<User> {
         val authenticatedUser = authenticationService.getUserByToken(token)
@@ -65,7 +65,8 @@ class AdminController(
         adminService.deleteUser(userId)
         return GenericResponse("Ok")
     }
-
+      
+    // TODO: Add check against a db of most used passwords
     @PatchMapping("/student")
     fun changeStudentPassword(@RequestHeader token: String, @RequestParam userId: Long, @RequestParam newPassword: String): GenericResponse<User> {
         val authenticatedUser = authenticationService.getUserByToken(token)
@@ -80,7 +81,7 @@ class AdminController(
 
         return GenericResponse(adminService.changeUserPassword(userId, newPassword))
     }
-
+    // TODO: Add a check against a db of most used passwords
     @PutMapping("/teacher")
     fun createTeacher(@RequestHeader token: String, @RequestBody user: com.stsf.globalbackend.request.User): GenericResponse<User> {
         val authenticatedUser = authenticationService.getUserByToken(token)
@@ -108,7 +109,7 @@ class AdminController(
         adminService.deleteUser(userId)
         return GenericResponse("Ok")
     }
-
+    // TODO: Add a check against a db of most used passwords
     @PatchMapping("/teacher")
     fun changeTeacherPassword(@RequestHeader token: String, @RequestParam userId: Long, @RequestParam newPassword: String): GenericResponse<User> {
         val authenticatedUser = authenticationService.getUserByToken(token)
@@ -123,7 +124,7 @@ class AdminController(
 
         return GenericResponse(adminService.changeUserPassword(userId, newPassword))
     }
-
+    // TODO: Add a check against a db of most used passwords
     @PutMapping("/create")
     fun createAdmin(@RequestHeader token: String?, @RequestBody user: com.stsf.globalbackend.request.User): GenericResponse<User> {
 
@@ -158,7 +159,7 @@ class AdminController(
         adminService.deleteUser(userId)
         return GenericResponse("Ok")
     }
-
+    // TODO: Add a check against a db of most used passwords
     @PatchMapping("/change")
     fun changeAdminPassword(@RequestHeader token: String, @RequestParam userId: Long, @RequestParam newPassword: String): GenericResponse<User> {
         val authenticatedUser = authenticationService.getUserByToken(token)
