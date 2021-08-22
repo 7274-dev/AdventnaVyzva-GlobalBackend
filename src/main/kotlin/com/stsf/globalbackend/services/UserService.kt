@@ -1,6 +1,7 @@
 package com.stsf.globalbackend.services
 
 import com.stsf.globalbackend.exceptions.NoSuchUserException
+import com.stsf.globalbackend.models.User
 import com.stsf.globalbackend.repositories.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
@@ -24,4 +25,5 @@ class UserService(
     }
 
     fun isStudent(userId: Long): Boolean = !isTeacher(userId)
+
 }

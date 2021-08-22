@@ -1,6 +1,5 @@
 package com.stsf.globalbackend.repositories
 
-import com.stsf.globalbackend.models.Class
 import com.stsf.globalbackend.models.ClassMember
 import org.springframework.data.jpa.repository.EntityGraph
 import org.springframework.data.jpa.repository.JpaRepository
@@ -16,4 +15,5 @@ interface ClassMemberRepository : JpaRepository<ClassMember, Long> {
 
 	@Query("from ClassMember c where c.clazz.id = :id")
 	fun findAllByClassId(@Param("id") classId: Long): List<ClassMember>
+
 }

@@ -9,8 +9,6 @@ import org.springframework.web.multipart.MultipartFile
 import java.io.ByteArrayInputStream
 import java.io.FileOutputStream
 import java.io.InputStream
-import java.nio.file.Files
-import java.nio.file.spi.FileTypeDetector
 
 @RestController
 @RequestMapping("/api/file")
@@ -36,7 +34,6 @@ class FileController(
     }
 
 }
-
 class RawFile(
     private val data: ByteArray,
     private val filename: String,
