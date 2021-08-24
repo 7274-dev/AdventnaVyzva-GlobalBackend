@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import com.stsf.globalbackend.exceptions.InsufficientPermissionsException
 import com.stsf.globalbackend.request.*
 import com.stsf.globalbackend.services.AuthenticationService
+import com.stsf.globalbackend.services.ClassService
 import com.stsf.globalbackend.services.HomeworkService
 import com.stsf.globalbackend.services.MarkdownService
 import org.springframework.beans.factory.annotation.Autowired
@@ -19,8 +20,15 @@ class HomeworkController (
 	@Autowired
 	private val homeworkService: HomeworkService,
 	@Autowired
-	private val markdownService: MarkdownService
+	private val markdownService: MarkdownService,
+	@Autowired
+	private val classService: ClassService
 ) {
+
+	@PostMapping("/mdtohtml")
+	fun getHtmlFromMarkdown(@RequestHeader token: String, @RequestBody html: String): GenericResponse<String> {
+		return GenericResponse(markdownService.markdownToHTML(markdownService.htmlEncode(html)))
+	}
 
 	@GetMapping("/admin")
 	fun getHomeworkForAdmin(@RequestHeader token: String, @RequestParam homeworkId: Long): GenericResponse<com.stsf.globalbackend.models.Homework> {
@@ -41,8 +49,6 @@ class HomeworkController (
 			throw InsufficientPermissionsException()
 		}
 
-		homework.text = markdownService.markdownToHTML(homework.text)
-
 		return GenericResponse(homeworkService.createHomework(homework))
 	}
 
@@ -59,19 +65,25 @@ class HomeworkController (
 		return GenericResponse("Ok")
 	}
 
-	// FIXME
+	// Should be fixed? (I didn't test it)
+	// - Ivan
 	@PatchMapping("/")
-	fun editHomework(@RequestHeader token: String, @RequestBody homework: Homework): GenericResponse<com.stsf.globalbackend.models.Homework> {
+	fun editHomework(@RequestHeader token: String, @RequestParam homeworkId: Long, @RequestBody homework: Homework): GenericResponse<com.stsf.globalbackend.models.Homework> {
 		val authenticatedUser = auth.getUserByToken(token)
 
 		if (!authenticatedUser.isTeacher) {
 			throw InsufficientPermissionsException()
 		}
-		// TODO: Check if teacher owns the class that the homework is assigned to
-		homework.text = markdownService.markdownToHTML(homework.text)
 
-		return GenericResponse(homeworkService.createHomework(homework))
+		val oldHomework = homeworkService.getHomeworkById(homeworkId)
 
+		oldHomework.clazz = classService.getClassById(homework.classId)
+		oldHomework.due = homework.due
+		oldHomework.fromDate = homework.fromDate
+		oldHomework.text = homework.text
+		oldHomework.title = homework.title
+
+		return GenericResponse(homeworkService.replaceHomework(oldHomework))
 	}
 
 	@GetMapping("/class")

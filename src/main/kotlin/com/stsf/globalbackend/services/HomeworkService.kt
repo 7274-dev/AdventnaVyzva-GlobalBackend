@@ -4,10 +4,8 @@ package com.stsf.globalbackend.services
 
 import com.stsf.globalbackend.exceptions.NoSuchClassException
 import com.stsf.globalbackend.exceptions.NoSuchHomeworkException
-import com.stsf.globalbackend.models.Class
 import com.stsf.globalbackend.models.ClassMember
 import com.stsf.globalbackend.models.Homework
-import com.stsf.globalbackend.models.User
 import com.stsf.globalbackend.repositories.ClassMemberRepository
 import com.stsf.globalbackend.repositories.ClassRepository
 import com.stsf.globalbackend.repositories.HomeworkRepository
@@ -28,6 +26,14 @@ class HomeworkService (
 	@Autowired
 	private val classMemberRepository: ClassMemberRepository
 ) {
+
+	fun getHomeworkById(homeworkId: Long): Homework {
+		if (!homeworkRepository.existsById(homeworkId)) {
+			throw NoSuchHomeworkException()
+		}
+
+		return homeworkRepository.getOne(homeworkId)
+	}
 
 	// No Mapping!
 	fun getAllHomeworksByStudent(studentId: Long): List<Homework> {
@@ -79,6 +85,10 @@ class HomeworkService (
 		}
 
 		return output
+	}
+
+	fun replaceHomework(homework: Homework): Homework {
+		return homeworkRepository.save(homework)
 	}
 
 	fun createHomework(newHomework: com.stsf.globalbackend.request.Homework): Homework {

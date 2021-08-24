@@ -38,6 +38,14 @@ class ClassService (
 		classMemberRepository.deleteInBatch(members)
 	}
 
+	fun getClassById(classId: Long): Class {
+		if (!classRepository.existsById(classId)) {
+			throw NoSuchClassException()
+		}
+
+		return classRepository.getOne(classId)
+	}
+
 	fun createClass(className: String): Class {
 
 		// Since we've (ivicek) decided that there can be classes with same name, check is useless

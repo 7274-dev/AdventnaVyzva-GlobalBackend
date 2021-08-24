@@ -11,14 +11,14 @@ data class Homework(
     val id: Long,
 
     @ManyToOne
-    val clazz: Class,
+    var clazz: Class,
 
-    val title: String,
-    val text: String,
+    var title: String,
+    var text: String,
 
     @Temporal(TemporalType.DATE)
-    val due: Date,
+    var due: Date,
 
     @Temporal(TemporalType.TIMESTAMP)
-    val fromDate: Date
+    var fromDate: Date
 )
