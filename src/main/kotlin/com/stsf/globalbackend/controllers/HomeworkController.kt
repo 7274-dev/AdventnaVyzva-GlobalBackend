@@ -26,8 +26,8 @@ class HomeworkController (
 ) {
 
 	@PostMapping("/mdtohtml")
-	fun getHtmlFromMarkdown(@RequestHeader token: String, @RequestBody html: String): GenericResponse<String> {
-		return GenericResponse(markdownService.markdownToHTML(markdownService.htmlEncode(html)))
+	fun getHtmlFromMarkdown(@RequestHeader token: String, @RequestBody markdown: String): GenericResponse<String> {
+		return GenericResponse(markdownService.markdownToHTML(markdownService.htmlEncode(markdown)))
 	}
 
 	@GetMapping("/admin")
