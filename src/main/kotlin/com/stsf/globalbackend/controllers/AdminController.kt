@@ -96,12 +96,10 @@ class AdminController(
         }
 
         val user = userRepository.findByIdOrNull(userId) ?: throw NoSuchUserException()
-        if (password == null) {
-
-            return GenericResponse(userRepository.save(User(-1, userName, user.password, name, false, false)))
-
+        return if (password == null) {
+            GenericResponse(userRepository.save(User(-1, userName, user.password, name, false, false)))
         } else {
-            return GenericResponse(userRepository.save(User(-1, userName, password, name, false, false)))
+            GenericResponse(userRepository.save(User(-1, userName, password, name, false, false)))
         }
     }
 
@@ -158,13 +156,11 @@ class AdminController(
         }
 
         val user = userRepository.findByIdOrNull(userId) ?: throw NoSuchUserException()
-        if (password == null) {
-
-            return GenericResponse(userRepository.save(User(-1, userName, user.password, name, true, false)))
-
-        } else {
-            return GenericResponse(userRepository.save(User(-1, userName, password, name, true, false)))
-        }
+    return if (password == null) {
+        GenericResponse(userRepository.save(User(-1, userName, user.password, name, true, false)))
+    } else {
+        GenericResponse(userRepository.save(User(-1, userName, password, name, true, false)))
+    }
 
     }
 
@@ -228,13 +224,11 @@ class AdminController(
         }
 
         val user = userRepository.findByIdOrNull(userId) ?: throw NoSuchUserException()
-        if (password == null) {
-
-            return GenericResponse(userRepository.save(User(-1, userName, user.password, name, true, true)))
-
-        } else {
-            return GenericResponse(userRepository.save(User(-1, userName, password, name, true, true)))
-        }
+    return if (password == null) {
+        GenericResponse(userRepository.save(User(-1, userName, user.password, name, true, true)))
+    } else {
+        GenericResponse(userRepository.save(User(-1, userName, password, name, true, true)))
+    }
 
     }
 }
