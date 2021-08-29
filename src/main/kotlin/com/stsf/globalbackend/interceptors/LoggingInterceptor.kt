@@ -73,7 +73,7 @@ class LoggingInterceptor : HandlerInterceptor, Filter {
 			message = if (response.status >= 500) {
 				"[${Kolor.foreground("ERROR", Color.RED)}] Status code: ${response.status}"
 			} else if (response.status in 200..299){
-				"[${Kolor.foreground("OK", Color.GREEN)}] Status code: ${response.status}\n[${Kolor.foreground("TIME", Color.BLUE)}] $result ms"
+				"[${Kolor.foreground("OK", Color.GREEN)}] Status code: ${response.status} - [${Kolor.foreground("TIME", Color.BLUE)}] $result ms"
 			} else {
 				"[${Kolor.foreground("WARN", Color.YELLOW)}] Status code: ${response.status}"
 			}
