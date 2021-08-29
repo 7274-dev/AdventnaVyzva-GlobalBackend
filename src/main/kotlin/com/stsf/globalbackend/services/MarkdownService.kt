@@ -12,4 +12,13 @@ class MarkdownService {
         val parsedTree = MarkdownParser(flavor).buildMarkdownTreeFromString(s)
         return HtmlGenerator(s, parsedTree, flavor).generateHtml()
     }
+
+    fun htmlEncode(s: String): String {
+        return s
+                .replace("<", "&lt")
+                .replace(">", "&gt")
+                .replace("&", "&amp")
+                .replace("\"", "&quot")
+                .replace("'", "&apos")
+    }
 }

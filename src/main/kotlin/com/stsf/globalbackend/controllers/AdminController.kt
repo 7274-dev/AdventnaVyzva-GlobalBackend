@@ -23,15 +23,14 @@ class AdminController(
 ) {
 
     @GetMapping("/student")
-    fun getStudentData(@RequestHeader token: String, @RequestParam studentID: Long): GenericResponse<User> {
+    fun getStudentData(@RequestHeader token: String, @RequestParam studentId: Long): GenericResponse<User> {
         val authenticatedUser = authenticationService.getUserByToken(token)
 
         if (!authenticatedUser.isAdmin) {
             throw InsufficientPermissionsException()
         }
 
-        val student = adminService.getStudentData(studentID)
-
+        val student = adminService.getStudentData(studentId)
         if (student.isTeacher || student.isAdmin) {
             throw InsufficientPermissionsException()
         }
@@ -64,7 +63,6 @@ class AdminController(
         }
 
         adminService.deleteUser(userId)
-
         return GenericResponse("Ok")
     }
 
@@ -128,6 +126,7 @@ class AdminController(
 
     @PutMapping("/create")
     fun createAdmin(@RequestHeader token: String?, @RequestBody user: com.stsf.globalbackend.request.User): GenericResponse<User> {
+
         if (!adminService.isUserDatabaseEmpty()) {
             if (token == null) {
                 throw BadTokenException()

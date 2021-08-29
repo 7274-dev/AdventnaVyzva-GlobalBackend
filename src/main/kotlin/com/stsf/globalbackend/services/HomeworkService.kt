@@ -3,10 +3,9 @@
 package com.stsf.globalbackend.services
 
 import com.stsf.globalbackend.exceptions.NoSuchClassException
-import com.stsf.globalbackend.models.Class
+import com.stsf.globalbackend.exceptions.NoSuchHomeworkException
 import com.stsf.globalbackend.models.ClassMember
 import com.stsf.globalbackend.models.Homework
-import com.stsf.globalbackend.models.User
 import com.stsf.globalbackend.repositories.ClassMemberRepository
 import com.stsf.globalbackend.repositories.ClassRepository
 import com.stsf.globalbackend.repositories.HomeworkRepository
@@ -28,6 +27,14 @@ class HomeworkService (
 	private val classMemberRepository: ClassMemberRepository
 ) {
 
+	fun getHomeworkById(homeworkId: Long): Homework {
+		if (!homeworkRepository.existsById(homeworkId)) {
+			throw NoSuchHomeworkException()
+		}
+
+		return homeworkRepository.getOne(homeworkId)
+	}
+
 	// No Mapping!
 	fun getAllHomeworksByStudent(studentId: Long): List<Homework> {
 		val clases: List<ClassMember> = classMemberRepository.findByUserId(studentId)
@@ -40,7 +47,6 @@ class HomeworkService (
 
 		return homeworks
 	}
-
 
 	fun getHomeworkByClass(classId: Long): List<Homework> {
 		val clazz = classRepository.findByIdOrNull(classId) ?: throw NoSuchClassException()
@@ -56,7 +62,6 @@ class HomeworkService (
 			if (hw.fromDate.after(today)) {
 				output.add(hw)
 			}
-
 		}
 
 		return output
@@ -82,6 +87,10 @@ class HomeworkService (
 		return output
 	}
 
+	fun replaceHomework(homework: Homework): Homework {
+		return homeworkRepository.save(homework)
+	}
+
 	fun createHomework(newHomework: com.stsf.globalbackend.request.Homework): Homework {
 		val (classId, title, text, due, from) = newHomework
 
@@ -96,4 +105,7 @@ class HomeworkService (
 		homeworkRepository.deleteById(homeworkId)
 	}
 
+	fun getHomeworkData(homeworkId: Long): Homework {
+		return homeworkRepository.findByIdOrNull(homeworkId) ?: throw NoSuchHomeworkException()
+	}
 }

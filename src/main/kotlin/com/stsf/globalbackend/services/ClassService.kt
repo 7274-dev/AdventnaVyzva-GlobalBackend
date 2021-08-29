@@ -34,9 +34,16 @@ class ClassService (
 	}
 
 	fun removeUserFromClass(userId: Long, classId: Long) {
-		// Thanks ivicek <3
 		val members = classMemberRepository.findAllByClassAndUserId(classId, userId)
 		classMemberRepository.deleteInBatch(members)
+	}
+
+	fun getClassById(classId: Long): Class {
+		if (!classRepository.existsById(classId)) {
+			throw NoSuchClassException()
+		}
+
+		return classRepository.getOne(classId)
 	}
 
 	fun createClass(className: String): Class {
@@ -49,7 +56,7 @@ class ClassService (
 
 	fun deleteClass(classId: Long) {
 
-		// Maybe do some black magic stuff and remove ClassMember?
+		//TODO: Maybe do some black magic stuff and remove ClassMember?
 		classRepository.deleteById(classId)
 
 	}
