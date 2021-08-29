@@ -34,7 +34,6 @@ class SearchService(
 
         val foundUsers = userRepository.findAllByNameContainsIgnoreCase(query)
 
-
         for (user in foundUsers) {
             output.add(user.id)
         }
