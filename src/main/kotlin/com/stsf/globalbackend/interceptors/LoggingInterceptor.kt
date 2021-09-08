@@ -16,6 +16,7 @@ import javax.servlet.ServletResponse
 import javax.servlet.annotation.WebFilter
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
+
 @Component
 @WebFilter("/**")
 class LoggingInterceptor : HandlerInterceptor, Filter {
