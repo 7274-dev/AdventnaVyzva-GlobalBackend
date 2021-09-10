@@ -15,4 +15,6 @@ data class HomeworkSubmission (
     @ManyToOne
     val user: User,
 
+    val content: String?,
+
     )
