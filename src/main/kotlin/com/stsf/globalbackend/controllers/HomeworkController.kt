@@ -4,9 +4,13 @@ package com.stsf.globalbackend.controllers
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.stsf.globalbackend.exceptions.InsufficientPermissionsException
 import com.stsf.globalbackend.exceptions.NoSuchHomeworkException
+import com.stsf.globalbackend.models.ClassMember
+import com.stsf.globalbackend.models.User
+import com.stsf.globalbackend.repositories.ClassMemberRepository
 import com.stsf.globalbackend.repositories.HomeworkRepository
 import com.stsf.globalbackend.request.*
 import com.stsf.globalbackend.services.AuthenticationService
+import com.stsf.globalbackend.services.ClassService
 import com.stsf.globalbackend.services.HomeworkService
 import com.stsf.globalbackend.services.MarkdownService
 import org.springframework.beans.factory.annotation.Autowired
@@ -25,6 +29,8 @@ class HomeworkController (
 	private val markdownService: MarkdownService,
 	@Autowired
 	private val homeworkRepository: HomeworkRepository,
+	@Autowired
+	private val classService: ClassMemberRepository,
 ) {
 
 	@PutMapping("/")
@@ -91,7 +97,7 @@ class HomeworkController (
 	): GenericResponse<List<com.stsf.globalbackend.models.Homework>> {
 			return GenericResponse(homeworkService.getHomeworkByDateAndClass(classId, date))
 	}
-	@PostMapping("/submit")
+	@PostMapping("/submissions")
 	fun submitHomework(@RequestHeader token: String, @RequestBody homeworkSubmission: HomeworkSubmission): GenericResponse<String> {
 		val authenticatedUser = auth.getUserByToken(token)
 
@@ -108,6 +114,27 @@ class HomeworkController (
 		homeworkService.submitHomework(com.stsf.globalbackend.models.HomeworkSubmission(-1, homework, authenticatedUser, homeworkSubmission.content), homeworkSubmission.fileIds)
 
 		return GenericResponse("Ok")
+
+	}
+
+	@GetMapping("/submissions")
+	fun getSubmittedHomework(@RequestHeader token: String, @RequestParam homeworkId: Long): GenericResponse<List<com.stsf.globalbackend.models.HomeworkSubmission>> {
+		val authenticatedUser = auth.getUserByToken(token)
+
+		// Performs a check to see if user owns the submissions or is admin
+		val homework = homeworkRepository.findByIdOrNull(homeworkId) ?: throw NoSuchHomeworkException()
+		val classMembers = classService.findAllByClassId(homework.clazz.id)
+		var userHasAccessToHomework = classMembers.contains(authenticatedUser)
+
+		if (authenticatedUser.isAdmin) {
+			userHasAccessToHomework = true
+		}
+
+		if (!userHasAccessToHomework) {
+			throw InsufficientPermissionsException()
+		}
+
+		return GenericResponse(homeworkService.getSubmissions(homeworkId, authenticatedUser.id))
 
 	}
 }

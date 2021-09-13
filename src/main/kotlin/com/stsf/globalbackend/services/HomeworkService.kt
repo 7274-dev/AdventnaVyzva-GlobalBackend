@@ -109,4 +109,19 @@ class HomeworkService (
 		homeworkSubmissionRepository.save(homeworkSubmission)
 	}
 
+	fun getSubmissions(homeworkId: Long, userId: Long): List<HomeworkSubmission> {
+		val output = mutableListOf<HomeworkSubmission>()
+		val submissions = homeworkSubmissionRepository.findAll()
+
+		for (submission in submissions) {
+
+			if (submission.user.id == userId) {
+				output.add(submission)
+			}
+
+		}
+
+		return output
+	}
+
 }
