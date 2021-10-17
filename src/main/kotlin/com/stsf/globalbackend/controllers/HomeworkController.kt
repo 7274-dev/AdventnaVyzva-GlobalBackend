@@ -26,18 +26,12 @@ class HomeworkController (
 ) {
 
 	@PostMapping("/mdtohtml")
-	fun getHtmlFromMarkdown(@RequestHeader token: String, @RequestBody markdown: String): GenericResponse<String> {
+	fun getHtmlFromMarkdown(@RequestBody markdown: String): GenericResponse<String> {
 		return GenericResponse(markdownService.markdownToHTML(markdownService.htmlEncode(markdown)))
 	}
 
-	@GetMapping("/admin")
-	fun getHomeworkForAdmin(@RequestHeader token: String, @RequestParam homeworkId: Long): GenericResponse<com.stsf.globalbackend.models.Homework> {
-		val authenticatedUser = auth.getUserByToken(token)
-
-		if (!authenticatedUser.isAdmin) {
-			throw InsufficientPermissionsException()
-		}
-
+	@GetMapping("/")
+	fun getHomework(@RequestParam homeworkId: Long): GenericResponse<com.stsf.globalbackend.models.Homework> {
 		return GenericResponse(homeworkService.getHomeworkData(homeworkId))
 	}
 
