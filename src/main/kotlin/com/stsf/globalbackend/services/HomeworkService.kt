@@ -31,6 +31,20 @@ class HomeworkService (
 	private val fileRepository: FileRepository,
 ) {
 
+	@Throws(NoSuchHomeworkException::class)
+	fun getAttachmentsForHomework(homeworkId: Long): List<HomeworkAttachment> {
+		return homeworkAttachmentRepository.getAllByHomework_Id(homeworkId)
+	}
+
+	@Throws(NoSuchHomeworkException::class)
+	fun addAttachmentToHomeworkSubmission(homeworkAttachment: com.stsf.globalbackend.request.HomeworkAttachment): HomeworkAttachment {
+		val homework = homeworkRepository.findByIdOrNull(homeworkAttachment.homeworkId) ?: throw NoSuchHomeworkException()
+
+		val attachment = HomeworkAttachment(-1, homework)
+		return homeworkAttachmentRepository.save(attachment)
+  }
+
+
 	fun getHomeworkById(homeworkId: Long): Homework {
 		if (!homeworkRepository.existsById(homeworkId)) {
 			throw NoSuchHomeworkException()
@@ -41,11 +55,11 @@ class HomeworkService (
 
 	// No Mapping!
 	fun getAllHomeworksByStudent(studentId: Long): List<Homework> {
-		val clases: List<ClassMember> = classMemberRepository.findByUserId(studentId)
+		val classes: List<ClassMember> = classMemberRepository.findByUserId(studentId)
 		val homeworks: ArrayList<Homework> = ArrayList()
 
 
-		for (clazz in clases) {
+		for (clazz in classes) {
 			homeworks.addAll(homeworkRepository.findAllByClazz(clazz.clazz))
 		}
 
