@@ -3,7 +3,8 @@ package com.stsf.globalbackend.models
 import javax.persistence.*
 
 @Entity
-data class HomeworkAttachment(
+data class HomeworkSubmission (
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     val id: Long,
@@ -11,6 +12,9 @@ data class HomeworkAttachment(
     @ManyToOne
     val homework: Homework,
 
-    @OneToOne
-    val file: File
-)
+    @ManyToOne
+    val user: User,
+
+    val content: String?,
+
+    )

@@ -11,4 +11,3 @@ data class File(
     val name: String,
     val path: String,
 )
-// TODO: Add a entity to represent homework to file relation

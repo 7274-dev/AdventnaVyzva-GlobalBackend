@@ -34,22 +34,29 @@ class ClassService (
 	}
 
 	fun removeUserFromClass(userId: Long, classId: Long) {
-		// Thanks ivicek <3
 		val members = classMemberRepository.findAllByClassAndUserId(classId, userId)
 		classMemberRepository.deleteInBatch(members)
+	}
+
+	fun getClassById(classId: Long): Class {
+		if (!classRepository.existsById(classId)) {
+			throw NoSuchClassException()
+		}
+
+		return classRepository.getOne(classId)
 	}
 
 	fun createClass(className: String): Class {
 
 		// Since we've (ivicek) decided that there can be classes with same name, check is useless
-		var newClass = Class(-1, className)
+		val newClass = Class(-1, className)
 		return classRepository.save(newClass)
 
 	}
 
 	fun deleteClass(classId: Long) {
 
-		// Maybe do some black magic stuff and remove ClassMember?
+		//TODO: Maybe do some black magic stuff and remove ClassMember?
 		classRepository.deleteById(classId)
 
 	}

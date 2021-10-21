@@ -20,11 +20,13 @@ class FileController(
 ) {
     @PostMapping("/upload")
     fun uploadFile(@RequestBody file: com.stsf.globalbackend.request.File): GenericResponse<File> {
+        // TODO: Add check if user is registered
         return GenericResponse(fileService.uploadFile(file.filename, file.data))
     }
 
     @GetMapping("/download")
     fun downloadFile(@RequestParam fileId: Long): RawFile {
+        // TODO: Add check if user is registered
         val contentType = fileService.getContentType(fileId)
 
         val fileContent = fileService.getFileContent(fileId)

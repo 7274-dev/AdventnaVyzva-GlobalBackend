@@ -26,12 +26,16 @@ class LoginController(
     fun getUserType(@RequestHeader token: String): GenericResponse<String> {
         val authenticatedUser = authenticationService.getUserByToken(token)
 
-        return if (authenticatedUser.isTeacher) {
-            GenericResponse("teacher")
-        } else if (authenticatedUser.isAdmin) {
-            GenericResponse("admin")
-        } else {
-            GenericResponse("student")
+        return when {
+            authenticatedUser.isAdmin -> {
+                GenericResponse("admin")
+            }
+            authenticatedUser.isTeacher -> {
+                GenericResponse("teacher")
+            }
+            else -> {
+                GenericResponse("student")
+            }
         }
     }
 
@@ -48,5 +52,10 @@ class LoginController(
             throw InsufficientPermissionsException()
         }
         return GenericResponse(adminService.createAdminAccount(username, password, name))
+    }
+
+    @GetMapping("/id")
+    fun getIdByToken(@RequestHeader token: String): GenericResponse<Long> {
+        return GenericResponse(authenticationService.getUserByToken(token).id)
     }
 }

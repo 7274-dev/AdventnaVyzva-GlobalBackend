@@ -89,4 +89,8 @@ class AdminService(
     fun deleteUser(userId: Long) {
         userRepository.deleteById(userId)
     }
+
+    fun getStudentData(studentId: Long): User {
+        return userRepository.findByIdOrNull(studentId) ?: throw NoSuchUserException()
+    }
 }
