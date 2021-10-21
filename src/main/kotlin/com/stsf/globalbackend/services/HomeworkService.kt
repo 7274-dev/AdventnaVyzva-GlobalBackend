@@ -1,12 +1,13 @@
 package com.stsf.globalbackend.services
 
 import com.stsf.globalbackend.exceptions.NoSuchClassException
-import com.stsf.globalbackend.models.Class
+import com.stsf.globalbackend.exceptions.NoSuchHomeworkException
 import com.stsf.globalbackend.models.ClassMember
 import com.stsf.globalbackend.models.Homework
-import com.stsf.globalbackend.models.User
+import com.stsf.globalbackend.models.HomeworkAttachment
 import com.stsf.globalbackend.repositories.ClassMemberRepository
 import com.stsf.globalbackend.repositories.ClassRepository
+import com.stsf.globalbackend.repositories.HomeworkAttachmentRepository
 import com.stsf.globalbackend.repositories.HomeworkRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
@@ -23,16 +24,31 @@ class HomeworkService (
 	@Autowired
 	private val classRepository: ClassRepository,
 	@Autowired
-	private val classMemberRepository: ClassMemberRepository
+	private val classMemberRepository: ClassMemberRepository,
+	@Autowired
+	private val homeworkAttachmentRepository: HomeworkAttachmentRepository
 ) {
+
+	@Throws(NoSuchHomeworkException::class)
+	fun getAttachmentsForHomework(homeworkId: Long): List<HomeworkAttachment> {
+		return homeworkAttachmentRepository.getAllByHomework_Id(homeworkId)
+	}
+
+	@Throws(NoSuchHomeworkException::class)
+	fun addAttachmentToHomeworkSubmission(homeworkAttachment: com.stsf.globalbackend.request.HomeworkAttachment): HomeworkAttachment {
+		val homework = homeworkRepository.findByIdOrNull(homeworkAttachment.homeworkId) ?: throw NoSuchHomeworkException()
+
+		val attachment = HomeworkAttachment(-1, homework)
+		return homeworkAttachmentRepository.save(attachment)
+	}
 
 	// No Mapping!
 	fun getAllHomeworksByStudent(studentId: Long): List<Homework> {
-		val clases: List<ClassMember> = classMemberRepository.findByUserId(studentId)
+		val classes: List<ClassMember> = classMemberRepository.findByUserId(studentId)
 		val homeworks: ArrayList<Homework> = ArrayList()
 
 
-		for (clazz in clases) {
+		for (clazz in classes) {
 			homeworks.addAll(homeworkRepository.findAllByClazz(clazz.clazz))
 		}
 

@@ -22,6 +22,17 @@ class HomeworkController (
 	private val markdownService: MarkdownService
 ) {
 
+	// both attachment mappings have a problem: there is no check about homework ownership!!!
+	@GetMapping("/attachment")
+	fun getAttachments(@RequestHeader token: String, @RequestParam homeworkId: Long): GenericResponse<List<com.stsf.globalbackend.models.HomeworkAttachment>> {
+		return GenericResponse(homeworkService.getAttachmentsForHomework(homeworkId))
+	}
+
+	@PostMapping("/attachment")
+	fun addAttachmentToHomework(@RequestHeader token: String, @RequestBody attachment: HomeworkAttachment): GenericResponse<com.stsf.globalbackend.models.HomeworkAttachment> {
+		return GenericResponse(homeworkService.addAttachmentToHomeworkSubmission(attachment))
+	}
+
 	@PutMapping("/")
 	fun addHomework(@RequestHeader token: String, @RequestBody homework: Homework): GenericResponse<com.stsf.globalbackend.models.Homework> {
 		val authenticatedUser = auth.getUserByToken(token)
