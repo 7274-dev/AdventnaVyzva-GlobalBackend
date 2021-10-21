@@ -3,12 +3,10 @@
 package com.stsf.globalbackend.services
 
 import com.stsf.globalbackend.exceptions.NoSuchClassException
+import com.stsf.globalbackend.exceptions.NoSuchFileException
+import com.stsf.globalbackend.models.*
+import com.stsf.globalbackend.repositories.*
 import com.stsf.globalbackend.exceptions.NoSuchHomeworkException
-import com.stsf.globalbackend.models.ClassMember
-import com.stsf.globalbackend.models.Homework
-import com.stsf.globalbackend.repositories.ClassMemberRepository
-import com.stsf.globalbackend.repositories.ClassRepository
-import com.stsf.globalbackend.repositories.HomeworkRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -24,7 +22,13 @@ class HomeworkService (
 	@Autowired
 	private val classRepository: ClassRepository,
 	@Autowired
-	private val classMemberRepository: ClassMemberRepository
+	private val classMemberRepository: ClassMemberRepository,
+	@Autowired
+	private val homeworkSubmissionRepository: HomeworkSubmissionRepository,
+	@Autowired
+	private val homeworkSubmissionAttachmentRepository: HomeworkSubmissionAttachmentRepository,
+	@Autowired
+	private val fileRepository: FileRepository,
 ) {
 
 	fun getHomeworkById(homeworkId: Long): Homework {
@@ -105,6 +109,35 @@ class HomeworkService (
 		homeworkRepository.deleteById(homeworkId)
 	}
 
+	fun submitHomework(homeworkSubmission: HomeworkSubmission, attachmentIds: List<Long>?) {
+
+		if (attachmentIds != null) {
+			for (attachment in attachmentIds) {
+				val attachmentId = fileRepository.findByIdOrNull(attachment) ?: throw NoSuchFileException()
+				val attachment = HomeworkSubmissionAttachment(-1, homeworkSubmission, attachmentId)
+
+				homeworkSubmissionAttachmentRepository.save(attachment)
+			}
+		}
+		homeworkSubmissionRepository.save(homeworkSubmission)
+	}
+
+	fun getSubmissions(homeworkId: Long, userId: Long): List<HomeworkSubmission> {
+		val output = mutableListOf<HomeworkSubmission>()
+		val submissions = homeworkSubmissionRepository.findAll()
+
+		for (submission in submissions) {
+
+			if (submission.user.id == userId) {
+				output.add(submission)
+			}
+
+		}
+
+		return output
+	}
+
+}
 	fun getHomeworkData(homeworkId: Long): Homework {
 		return homeworkRepository.findByIdOrNull(homeworkId) ?: throw NoSuchHomeworkException()
 	}
