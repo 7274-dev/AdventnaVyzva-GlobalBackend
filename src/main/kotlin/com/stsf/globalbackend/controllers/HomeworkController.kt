@@ -114,7 +114,7 @@ class HomeworkController (
 	fun submitHomework(@RequestHeader token: String, @RequestBody homeworkSubmission: HomeworkSubmission): GenericResponse<String> {
 		val authenticatedUser = auth.getUserByToken(token)
 
-		if (homeworkRepository.findByIdOrNull(homeworkSubmission.homeworkId) !in homeworkService.getAllHomeworksByStudent(authenticatedUser.id)) {
+		if (homeworkService.getHomeworkById(homeworkSubmission.homeworkId) !in homeworkService.getAllHomeworksByStudent(authenticatedUser.id)) {
 			throw InsufficientPermissionsException()
 		}
 
@@ -122,7 +122,7 @@ class HomeworkController (
 			homeworkSubmission.content = ""
 		}
 
-		val homework = homeworkRepository.findByIdOrNull(homeworkSubmission.homeworkId) ?: throw NoSuchHomeworkException()
+		val homework = homeworkService.getHomeworkData(homeworkSubmission.homeworkId) ?: throw NoSuchHomeworkException()
 
 		homeworkService.submitHomework(com.stsf.globalbackend.models.HomeworkSubmission(-1, homework, authenticatedUser, homeworkSubmission.content), homeworkSubmission.fileIds)
 
@@ -135,8 +135,8 @@ class HomeworkController (
 		val authenticatedUser = auth.getUserByToken(token)
 
 		// Performs a check to see if user owns the submissions or is admin
-		val homework = homeworkRepository.findByIdOrNull(homeworkId) ?: throw NoSuchHomeworkException()
-		val classMembers = classService.findAllByClassId(homework.clazz.id)
+		val homework = homeworkService.getHomeworkById(homeworkId) ?: throw NoSuchHomeworkException()
+		val classMembers = classService.getAllUsersInClass(homework.clazz.id)
 		var userHasAccessToHomework = classMembers.contains(authenticatedUser)
 
 		if (authenticatedUser.isAdmin) {
@@ -148,6 +148,5 @@ class HomeworkController (
 		}
 
 		return GenericResponse(homeworkService.getSubmissions(homeworkId, authenticatedUser.id))
-
 	}
 }

@@ -137,8 +137,8 @@ class HomeworkService (
 		return output
 	}
 
-}
 	fun getHomeworkData(homeworkId: Long): Homework {
 		return homeworkRepository.findByIdOrNull(homeworkId) ?: throw NoSuchHomeworkException()
 	}
 }
+

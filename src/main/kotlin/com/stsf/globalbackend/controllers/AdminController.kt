@@ -126,7 +126,6 @@ class AdminController(
 
     @PutMapping("/create")
     fun createAdmin(@RequestHeader token: String?, @RequestBody user: com.stsf.globalbackend.request.User): GenericResponse<User> {
-
         if (!adminService.isUserDatabaseEmpty()) {
             if (token == null) {
                 throw BadTokenException()

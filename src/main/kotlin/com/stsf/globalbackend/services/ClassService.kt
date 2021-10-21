@@ -49,7 +49,7 @@ class ClassService (
 	fun createClass(className: String): Class {
 
 		// Since we've (ivicek) decided that there can be classes with same name, check is useless
-		var newClass = Class(-1, className)
+		val newClass = Class(-1, className)
 		return classRepository.save(newClass)
 
 	}
