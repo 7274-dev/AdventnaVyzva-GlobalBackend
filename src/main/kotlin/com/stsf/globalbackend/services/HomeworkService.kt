@@ -1,9 +1,12 @@
+@file:Suppress("SpellCheckingInspection")
+
 package com.stsf.globalbackend.services
 
 import com.stsf.globalbackend.exceptions.NoSuchClassException
 import com.stsf.globalbackend.exceptions.NoSuchFileException
 import com.stsf.globalbackend.models.*
 import com.stsf.globalbackend.repositories.*
+import com.stsf.globalbackend.exceptions.NoSuchHomeworkException
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -28,6 +31,14 @@ class HomeworkService (
 	private val fileRepository: FileRepository,
 ) {
 
+	fun getHomeworkById(homeworkId: Long): Homework {
+		if (!homeworkRepository.existsById(homeworkId)) {
+			throw NoSuchHomeworkException()
+		}
+
+		return homeworkRepository.getOne(homeworkId)
+	}
+
 	// No Mapping!
 	fun getAllHomeworksByStudent(studentId: Long): List<Homework> {
 		val clases: List<ClassMember> = classMemberRepository.findByUserId(studentId)
@@ -40,7 +51,6 @@ class HomeworkService (
 
 		return homeworks
 	}
-
 
 	fun getHomeworkByClass(classId: Long): List<Homework> {
 		val clazz = classRepository.findByIdOrNull(classId) ?: throw NoSuchClassException()
@@ -56,7 +66,6 @@ class HomeworkService (
 			if (hw.fromDate.after(today)) {
 				output.add(hw)
 			}
-
 		}
 
 		return output
@@ -80,6 +89,10 @@ class HomeworkService (
 		}
 
 		return output
+	}
+
+	fun replaceHomework(homework: Homework): Homework {
+		return homeworkRepository.save(homework)
 	}
 
 	fun createHomework(newHomework: com.stsf.globalbackend.request.Homework): Homework {
@@ -124,4 +137,8 @@ class HomeworkService (
 		return output
 	}
 
+}
+	fun getHomeworkData(homeworkId: Long): Homework {
+		return homeworkRepository.findByIdOrNull(homeworkId) ?: throw NoSuchHomeworkException()
+	}
 }

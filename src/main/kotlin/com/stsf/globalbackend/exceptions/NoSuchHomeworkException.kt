@@ -1,3 +1,3 @@
 package com.stsf.globalbackend.exceptions
 
-class NoSuchHomeworkException : Exception("No such homework")
+class NoSuchHomeworkException : NoSuchException("No such homework")

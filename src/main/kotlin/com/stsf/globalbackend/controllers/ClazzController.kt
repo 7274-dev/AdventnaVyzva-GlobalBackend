@@ -32,7 +32,7 @@ class ClazzController (@Autowired
 
 	}
 
-	// Wont this cause problems?
+	// Won't this cause problems with classMembers?
 	@DeleteMapping("/class")
 	fun deleteClassController(@RequestHeader token: String, @RequestParam classId: Long): GenericResponse<String> {
 
@@ -47,16 +47,17 @@ class ClazzController (@Autowired
 
 	}
 
-	@GetMapping("/class")
-	fun getAllClassesController(@RequestHeader token: String): GenericResponse<List<Class>> {
-		val authenticatedUser = authenticationService.getUserByToken(token)
-		val classes = classService.getAllClasses()
-
-		if (!authenticatedUser.isTeacher) {
-			throw InsufficientPermissionsException()
-		}
-		return GenericResponse(classes)
-	}
+//	@GetMapping("/class")
+//	fun getAllClassesController(@RequestHeader token: String): GenericResponse<List<Class>> {
+//
+//		val authenticatedUser = authenticationService.getUserByToken(token)
+//		val classes = classService.getAllClasses()
+//
+//		if (!authenticatedUser.isTeacher) {
+//			throw InsufficientPermissionsException()
+//		}
+//		return GenericResponse(classes)
+//	}
 
 	@PutMapping("/classMember")
 	fun addUserToClassController(@RequestHeader token: String, @RequestBody userAndClassId: UserAndClassId): GenericResponse<ClassMember> {
@@ -67,6 +68,8 @@ class ClazzController (@Autowired
 			throw InsufficientPermissionsException()
 		}
 
+		// TODO: Check if teacher is adding students to his class
+		// NOTE: Admins should have the ability to add any user to any class
 		return GenericResponse(classService.addUserToClass(userAndClassId.userId, userAndClassId.classId))
 
 	}
@@ -80,6 +83,8 @@ class ClazzController (@Autowired
 			throw InsufficientPermissionsException()
 		}
 
+		// TODO: Check if teacher is removing students from his class
+		// NOTE: Admins should have the ability to remove any user from any class
 		classService.removeUserFromClass(userAndClassId.userId, userAndClassId.classId)
 
 		return GenericResponse("Ok")
@@ -93,7 +98,8 @@ class ClazzController (@Autowired
 		if (!authenticatedUser.isTeacher) {
 			throw InsufficientPermissionsException()
 		}
-
+		// TODO: Check if teacher owns this class
+		// NOTE: Admins should have the ability to get users from any class
 		return GenericResponse(users)
 	}
 

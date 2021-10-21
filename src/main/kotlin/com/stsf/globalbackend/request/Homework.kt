@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import java.util.*
 
 data class Homework(
-
     val classId: Long,
     val title: String,
     var text: String,
