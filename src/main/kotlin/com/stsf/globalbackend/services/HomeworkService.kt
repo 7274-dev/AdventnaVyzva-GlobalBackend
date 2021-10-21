@@ -28,6 +28,8 @@ class HomeworkService (
 	@Autowired
 	private val homeworkSubmissionAttachmentRepository: HomeworkSubmissionAttachmentRepository,
 	@Autowired
+	private val homeworkAttachmentRepository: HomeworkAttachmentRepository,
+	@Autowired
 	private val fileRepository: FileRepository,
 ) {
 
@@ -36,11 +38,13 @@ class HomeworkService (
 		return homeworkAttachmentRepository.getAllByHomework_Id(homeworkId)
 	}
 
-	@Throws(NoSuchHomeworkException::class)
+	@Throws(NoSuchHomeworkException::class, NoSuchFileException::class)
 	fun addAttachmentToHomeworkSubmission(homeworkAttachment: com.stsf.globalbackend.request.HomeworkAttachment): HomeworkAttachment {
 		val homework = homeworkRepository.findByIdOrNull(homeworkAttachment.homeworkId) ?: throw NoSuchHomeworkException()
+		val file = fileRepository.findByIdOrNull(homeworkAttachment.fileId) ?: throw NoSuchFileException()
 
-		val attachment = HomeworkAttachment(-1, homework)
+		val attachment = HomeworkAttachment(-1, homework, file)
+
 		return homeworkAttachmentRepository.save(attachment)
   }
 
