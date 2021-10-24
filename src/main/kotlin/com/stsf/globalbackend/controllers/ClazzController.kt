@@ -47,17 +47,19 @@ class ClazzController (@Autowired
 
 	}
 
-//	@GetMapping("/class")
-//	fun getAllClassesController(@RequestHeader token: String): GenericResponse<List<Class>> {
-//
-//		val authenticatedUser = authenticationService.getUserByToken(token)
-//		val classes = classService.getAllClasses()
-//
-//		if (!authenticatedUser.isTeacher) {
-//			throw InsufficientPermissionsException()
-//		}
-//		return GenericResponse(classes)
-//	}
+	@GetMapping("/class")
+	fun getAllClassesController(@RequestHeader token: String): GenericResponse<List<Class>> {
+
+		val authenticatedUser = authenticationService.getUserByToken(token)
+
+		if (!authenticatedUser.isTeacher) {
+			throw InsufficientPermissionsException()
+		}
+
+		val classes = classService.getAllClasses()
+
+		return GenericResponse(classes)
+	}
 
 	@PutMapping("/classMember")
 	fun addUserToClassController(@RequestHeader token: String, @RequestBody userAndClassId: UserAndClassId): GenericResponse<ClassMember> {
