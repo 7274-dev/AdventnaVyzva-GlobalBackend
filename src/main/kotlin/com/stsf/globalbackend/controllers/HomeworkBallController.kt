@@ -21,14 +21,14 @@ class HomeworkBallController (
     private val ballService: HomeworkBallService,
     ) {
 
-    @PutMapping("/")
+    @PutMapping
     fun addBall(@RequestHeader token: String, @RequestParam homeworkId: Long): GenericResponse<HomeworkBall> {
         val authenticatedUser = auth.getUserByToken(token)
         return GenericResponse(ballService.addBall(authenticatedUser.id, homeworkId))
 
     }
 
-    @DeleteMapping("/")
+    @DeleteMapping
     fun deleteBall(@RequestHeader token: String, @RequestParam ballId: Long) {
         val authenticatedUser = auth.getUserByToken(token)
         val balls = ballService.getAllBallsByUserId(authenticatedUser.id)
@@ -53,7 +53,7 @@ class HomeworkBallController (
         }
     }
 
-    @GetMapping("/")
+    @GetMapping
     fun getAllBalls(@RequestHeader token: String): GenericResponse<List<HomeworkBall>> {
         val authenticatedUser = auth.getUserByToken(token)
         return GenericResponse(ballService.getAllBallsByUserId(authenticatedUser.id))

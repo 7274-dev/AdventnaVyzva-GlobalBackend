@@ -11,14 +11,15 @@ import com.stsf.globalbackend.services.ClassService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
-@RestController("/api")
+@RestController
+@RequestMapping("/api/class")
 class ClazzController (@Autowired
                        private val classService: ClassService,
                        @Autowired
                        private val authenticationService: AuthenticationService) {
 
 
-	@PutMapping("/class")
+	@PutMapping
 	fun createClassController(@RequestHeader token: String, @RequestParam className: String): GenericResponse<Class> {
 
 		val authenticatedUser = authenticationService.getUserByToken(token)
@@ -33,7 +34,7 @@ class ClazzController (@Autowired
 	}
 
 	// Won't this cause problems with classMembers?
-	@DeleteMapping("/class")
+	@DeleteMapping
 	fun deleteClassController(@RequestHeader token: String, @RequestParam classId: Long): GenericResponse<String> {
 
 		val authenticatedUser = authenticationService.getUserByToken(token)
@@ -47,7 +48,7 @@ class ClazzController (@Autowired
 
 	}
 
-	@GetMapping("/class")
+	@GetMapping
 	fun getAllClassesController(@RequestHeader token: String): GenericResponse<List<Class>> {
 
 		val authenticatedUser = authenticationService.getUserByToken(token)
@@ -61,7 +62,7 @@ class ClazzController (@Autowired
 		return GenericResponse(classes)
 	}
 
-	@PutMapping("/class/member")
+	@PutMapping("/member")
 	fun addUserToClassController(@RequestHeader token: String, @RequestBody userAndClassId: UserAndClassId): GenericResponse<ClassMember> {
 
 		val authenticatedUser = authenticationService.getUserByToken(token)
@@ -76,7 +77,7 @@ class ClazzController (@Autowired
 
 	}
 
-	@DeleteMapping("/class/member")
+	@DeleteMapping("/member")
 	fun removeUserFromClassController(@RequestHeader token: String, @RequestBody userAndClassId: UserAndClassId): GenericResponse<String> {
 
 		val authenticatedUser = authenticationService.getUserByToken(token)
@@ -92,7 +93,7 @@ class ClazzController (@Autowired
 		return GenericResponse("Ok")
 	}
 
-	@GetMapping("/class/member")
+	@GetMapping("/member")
 	fun getAllUsersFromClassController(@RequestHeader token: String, @RequestParam classId: Long): GenericResponse<List<User>> {
 		val authenticatedUser = authenticationService.getUserByToken(token)
 		val users = classService.getAllUsersInClass(classId)
