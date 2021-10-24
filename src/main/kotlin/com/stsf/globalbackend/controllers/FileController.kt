@@ -22,7 +22,7 @@ class FileController(
     private val fileService: FileService
 ) {
     @PostMapping("/upload")
-    fun uploadFile(file: MultipartFile): GenericResponse<File> {
+    fun uploadFile(@RequestBody file: MultipartFile): GenericResponse<File> {
         // TODO: Add check if user is registered
         return GenericResponse(fileService.uploadFile(file))
     }
