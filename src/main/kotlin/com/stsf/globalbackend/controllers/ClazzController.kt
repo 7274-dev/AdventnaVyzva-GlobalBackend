@@ -61,7 +61,7 @@ class ClazzController (@Autowired
 		return GenericResponse(classes)
 	}
 
-	@PutMapping("/classMember")
+	@PutMapping("/class/member")
 	fun addUserToClassController(@RequestHeader token: String, @RequestBody userAndClassId: UserAndClassId): GenericResponse<ClassMember> {
 
 		val authenticatedUser = authenticationService.getUserByToken(token)
@@ -76,7 +76,7 @@ class ClazzController (@Autowired
 
 	}
 
-	@DeleteMapping("/classMember")
+	@DeleteMapping("/class/member")
 	fun removeUserFromClassController(@RequestHeader token: String, @RequestBody userAndClassId: UserAndClassId): GenericResponse<String> {
 
 		val authenticatedUser = authenticationService.getUserByToken(token)
@@ -92,7 +92,7 @@ class ClazzController (@Autowired
 		return GenericResponse("Ok")
 	}
 
-	@GetMapping("/classMember")
+	@GetMapping("/class/member")
 	fun getAllUsersFromClassController(@RequestHeader token: String, @RequestParam classId: Long): GenericResponse<List<User>> {
 		val authenticatedUser = authenticationService.getUserByToken(token)
 		val users = classService.getAllUsersInClass(classId)
