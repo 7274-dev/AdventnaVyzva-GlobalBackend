@@ -21,7 +21,6 @@ class ClazzController (@Autowired
 
 	@PutMapping
 	fun createClassController(@RequestHeader token: String, @RequestParam className: String): GenericResponse<Class> {
-
 		val authenticatedUser = authenticationService.getUserByToken(token)
 
 		if (!authenticatedUser.isTeacher)
@@ -43,7 +42,9 @@ class ClazzController (@Autowired
 			throw InsufficientPermissionsException()
 		}
 
-		classService.deleteClass(classId)
+
+
+		classService.deleteClassAndOrphanClassMembers(classId)
 		return GenericResponse("Ok")
 
 	}

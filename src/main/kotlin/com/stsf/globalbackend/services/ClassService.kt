@@ -24,7 +24,6 @@ class ClassService (
 ) {
 
 	fun addUserToClass(userId: Long, classId: Long): ClassMember {
-
 		val clazz = classRepository.findByIdOrNull(classId) ?: throw NoSuchClassException()
 		val user =  userRepository.findByIdOrNull(userId) ?: throw NoSuchUserException()
 
@@ -54,11 +53,10 @@ class ClassService (
 
 	}
 
-	fun deleteClass(classId: Long) {
+	fun deleteClassAndOrphanClassMembers(classId: Long) {
+		classMemberRepository.deleteInBatch(classMemberRepository.findAllByClassId(classId))
 
-		//TODO: Maybe do some black magic stuff and remove ClassMember?
 		classRepository.deleteById(classId)
-
 	}
 
 
