@@ -7,6 +7,7 @@ import com.stsf.globalbackend.repositories.HomeworkRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import org.springframework.web.multipart.MultipartFile
 import java.io.*
 import java.lang.Exception
 import java.nio.file.Files
@@ -52,7 +53,7 @@ class FileService(
     fun getFileContent(fileId: Long): ByteArray {
         val fileEntry = fileRepository.findByIdOrNull(fileId) ?: throw NoSuchFileException()
         try {
-            val file = File(fileEntry.name)
+            val file = File(fileEntry.path)
             if (!file.exists()) {
                 throw Exception()
             }
@@ -69,6 +70,12 @@ class FileService(
         }
     }
 
+    fun getFilePath(fileId: Long): String {
+        val fileEntry = fileRepository.findByIdOrNull(fileId) ?: throw NoSuchFileException()
+
+        return fileEntry.path
+    }
+
     fun getFileName(fileId: Long): String {
         val fileEntry = fileRepository.findByIdOrNull(fileId) ?: throw NoSuchFileException()
 
@@ -81,9 +88,12 @@ class FileService(
     }
 
 
-    fun uploadFile(filename: String, data: ByteArray): com.stsf.globalbackend.models.File {
+    fun uploadFile(file: MultipartFile): com.stsf.globalbackend.models.File {
+        val filename = file.originalFilename ?: createUniqueFileName()
+
         val path = createUniqueFileName()
-        saveFile(path, data)
+
+        file.transferTo(Path.of(path))
 
         return fileRepository.save(com.stsf.globalbackend.models.File(-1, filename, path))
     }
