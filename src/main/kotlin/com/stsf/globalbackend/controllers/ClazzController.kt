@@ -23,8 +23,7 @@ class ClazzController (@Autowired
 	fun createClassController(@RequestHeader token: String, @RequestParam className: String): GenericResponse<Class> {
 		val authenticatedUser = authenticationService.getUserByToken(token)
 
-		if (!authenticatedUser.isTeacher)
-		{
+		if (!authenticatedUser.isAdmin && !authenticatedUser.isTeacher) {
 			throw InsufficientPermissionsException()
 		}
 
@@ -38,7 +37,7 @@ class ClazzController (@Autowired
 
 		val authenticatedUser = authenticationService.getUserByToken(token)
 
-		if (!authenticatedUser.isTeacher) {
+		if (!authenticatedUser.isTeacher && !authenticatedUser.isAdmin) {
 			throw InsufficientPermissionsException()
 		}
 
@@ -54,7 +53,7 @@ class ClazzController (@Autowired
 
 		val authenticatedUser = authenticationService.getUserByToken(token)
 
-		if (!authenticatedUser.isTeacher) {
+		if (!authenticatedUser.isTeacher && !authenticatedUser.isAdmin) {
 			throw InsufficientPermissionsException()
 		}
 
@@ -68,7 +67,7 @@ class ClazzController (@Autowired
 
 		val authenticatedUser = authenticationService.getUserByToken(token)
 
-		if (!authenticatedUser.isTeacher) {
+		if (!authenticatedUser.isTeacher && !authenticatedUser.isAdmin) {
 			throw InsufficientPermissionsException()
 		}
 
@@ -83,7 +82,7 @@ class ClazzController (@Autowired
 
 		val authenticatedUser = authenticationService.getUserByToken(token)
 
-		if (!authenticatedUser.isTeacher) {
+		if (!authenticatedUser.isTeacher && !authenticatedUser.isAdmin) {
 			throw InsufficientPermissionsException()
 		}
 
