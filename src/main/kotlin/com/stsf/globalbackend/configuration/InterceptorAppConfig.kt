@@ -14,6 +14,7 @@ class InterceptorAppConfig : WebMvcConfigurer {
         registry.addInterceptor(AuthenticationInterceptor())
             .addPathPatterns("/api/**") // authenticated paths here
             .excludePathPatterns("/api/admin/create")
+            .excludePathPatterns("/api/file/**")
             
         registry.addInterceptor(RequestRateLimitInterceptor())
             .addPathPatterns("/**")

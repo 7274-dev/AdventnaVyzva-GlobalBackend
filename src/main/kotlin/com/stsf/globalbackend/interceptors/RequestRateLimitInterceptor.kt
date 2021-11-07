@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletResponse
 class RequestRateLimitInterceptor : HandlerInterceptor {
 
 	companion object {
-		private const val MAX_REQUESTS = 100
+		private const val MAX_REQUESTS = 10000
 		private var cache: Cache<String, Int> = CacheBuilder.newBuilder()
 			.expireAfterAccess(Duration.ofSeconds(2))
 			.build()
@@ -33,7 +33,7 @@ class RequestRateLimitInterceptor : HandlerInterceptor {
 	}
 
 	override fun preHandle(request: HttpServletRequest, response: HttpServletResponse, handler: Any): Boolean {
-		val token = request.getHeader("token") ?: return true
+		val token = request.getHeader("token") ?: request.remoteAddr.toString()
 
 		if (isOverLimit(token)) {
 			response.sendError(418) // I'm a teapot

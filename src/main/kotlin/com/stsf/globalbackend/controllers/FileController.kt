@@ -30,12 +30,6 @@ class FileController(
     @GetMapping("/download")
     @ResponseBody
     fun downloadFile(@RequestParam fileId: Long): FileSystemResource {
-        // TODO: Add check if user is registered
-        val contentType = fileService.getContentType(fileId)
-
-        val fileContent = fileService.getFileContent(fileId)
-        val filename = fileService.getFileName(fileId)
-
         return FileSystemResource(fileService.getFilePath(fileId))
     }
 

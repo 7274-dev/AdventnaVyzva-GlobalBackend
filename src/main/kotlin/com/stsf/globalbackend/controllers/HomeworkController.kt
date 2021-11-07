@@ -47,7 +47,7 @@ class HomeworkController (
 		return GenericResponse(markdownService.markdownToHTML(markdownService.htmlEncode(markdown)))
 	}
 
-	@GetMapping
+	@GetMapping("")
 	fun getHomework(@RequestParam homeworkId: Long): GenericResponse<com.stsf.globalbackend.models.Homework> {
 		return GenericResponse(homeworkService.getHomeworkData(homeworkId))
 	}
