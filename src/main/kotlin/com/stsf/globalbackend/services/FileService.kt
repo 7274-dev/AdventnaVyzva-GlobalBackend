@@ -1,102 +1,64 @@
 package com.stsf.globalbackend.services
 
+import com.stsf.globalbackend.configuration.ConfigurationProperties
 import com.stsf.globalbackend.exceptions.NoSuchFileException
-import com.stsf.globalbackend.exceptions.NoSuchHomeworkException
 import com.stsf.globalbackend.repositories.FileRepository
 import com.stsf.globalbackend.repositories.HomeworkRepository
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.core.env.Environment
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.io.*
-import java.lang.Exception
-import java.nio.file.Files
 import java.nio.file.Path
-import java.util.*
+import java.nio.file.Paths
 
 @Service
 class FileService(
     @Autowired
     private val fileRepository: FileRepository,
     @Autowired
-    private val homeworkRepository: HomeworkRepository
+    private val homeworkRepository: HomeworkRepository,
+    @Autowired
+    private val environment: Environment
 ) {
-    companion object {
-        fun createUniqueFileName(): String {
-            var name = UUID.randomUUID().toString()
-            while (File(name).exists()) {
-                name = UUID.randomUUID().toString()
-            }
 
-            return "$name.bin"
+    fun getStorageDirectoryPath(): String {
+        return environment.getProperty("stsf.config.storageDirectory") ?: ConfigurationProperties().storageDirectory
+    }
+
+    fun appendToPath(path: String, filename: String): String {
+        return if (!path.endsWith("/")) {
+            "$path/$filename"
+        } else {
+            "$path$filename"
         }
     }
 
-    private fun saveFile(filename: String, data: ByteArray) {
-        try {
-            val file = File(filename)
+    fun getFile(fileId: Long): File {
+        val path = (fileRepository.findByIdOrNull(fileId) ?: throw NoSuchFileException()).path
 
-            file.createNewFile() // ensure the file exists
-
-            val bufferedStream = BufferedOutputStream(FileOutputStream(file))
-
-            bufferedStream.write(data)
-
-            bufferedStream.flush()
-            bufferedStream.close()
-        }
-        catch (e: Exception) {
-            throw IOException() // generalize any exception to IOException to make exception handlers simpler
-        }
-    }
-
-    fun getFileContent(fileId: Long): ByteArray {
-        val fileEntry = fileRepository.findByIdOrNull(fileId) ?: throw NoSuchFileException()
-        try {
-            val file = File(fileEntry.path)
-            if (!file.exists()) {
-                throw Exception()
-            }
-
-            val bufferedStream = BufferedInputStream(FileInputStream(file))
-            val fileContent = bufferedStream.readAllBytes()
-
-            bufferedStream.close()
-
-            return fileContent
-        }
-        catch (e: Exception) {
-            throw IOException() // generalize any exception to IOException to make exception handlers simpler
-        }
-    }
-
-    fun getFilePath(fileId: Long): String {
-        val fileEntry = fileRepository.findByIdOrNull(fileId) ?: throw NoSuchFileException()
-
-        return fileEntry.path
-    }
-
-    fun getFileName(fileId: Long): String {
-        val fileEntry = fileRepository.findByIdOrNull(fileId) ?: throw NoSuchFileException()
-
-        return fileEntry.name
-    }
-
-    fun getContentType(fileId: Long): String {
-        val fileEntry = fileRepository.findByIdOrNull(fileId) ?: throw NoSuchFileException()
-        return Files.probeContentType(Path.of(fileEntry.path))
+        return File(path)
     }
 
 
     fun uploadFile(file: MultipartFile): com.stsf.globalbackend.models.File {
-        val filename = file.originalFilename ?: createUniqueFileName()
+        val filename = file.originalFilename ?: file.name
 
-        val path = createUniqueFileName()
+        if (File(filename).exists()) {
+            throw FileAlreadyExistsException(File(filename))
+        }
 
-        file.transferTo(Path.of(path))
+        if (!File(getStorageDirectoryPath()).exists()) {
+            File(getStorageDirectoryPath()).mkdir()
+        }
 
-        return fileRepository.save(com.stsf.globalbackend.models.File(-1, filename, path))
+        val newFilePath = appendToPath(getStorageDirectoryPath(), filename)
+
+        File(newFilePath).createNewFile()
+
+        file.transferTo(Paths.get(newFilePath))
+
+        return fileRepository.save(com.stsf.globalbackend.models.File(-1, filename, newFilePath))
     }
-
-
 }

@@ -35,4 +35,9 @@ class ControllerAdvice {
     fun handleNoSuchExceptions(e: NoSuchException): ResponseEntity<GenericResponse<String>> {
         return ResponseEntity(GenericResponse(e.message ?: "No such thing"), HttpStatus.NOT_FOUND)
     }
+
+    @ExceptionHandler(FileAlreadyExistsException::class)
+    fun handleFileAlreadyExistsException(e: FileAlreadyExistsException): ResponseEntity<GenericResponse<String>> {
+        return ResponseEntity(GenericResponse("File already exists"), HttpStatus.CONFLICT)
+    }
 }
