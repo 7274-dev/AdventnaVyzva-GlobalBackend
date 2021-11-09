@@ -15,6 +15,7 @@ data class HomeworkSubmission (
     @ManyToOne
     val user: User,
 
+    @Lob
     val content: String?,
 
     )

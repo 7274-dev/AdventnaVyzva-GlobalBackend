@@ -14,6 +14,8 @@ data class Homework(
     var clazz: Class,
 
     var title: String,
+
+    @Lob
     var text: String,
 
     @Temporal(TemporalType.DATE)
