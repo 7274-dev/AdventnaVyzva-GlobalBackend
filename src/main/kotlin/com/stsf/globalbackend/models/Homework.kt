@@ -1,6 +1,7 @@
 package com.stsf.globalbackend.models
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import net.bytebuddy.implementation.bytecode.StackManipulation
 import java.util.*
 import javax.persistence.*
 
@@ -15,7 +16,7 @@ data class Homework(
 
     var title: String,
 
-    @Lob
+    @Column(length = 8192)
     var text: String,
 
     @Temporal(TemporalType.DATE)
