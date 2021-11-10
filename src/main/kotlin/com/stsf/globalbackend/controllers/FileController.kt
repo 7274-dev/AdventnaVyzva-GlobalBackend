@@ -38,7 +38,7 @@ class FileController(
 
         return ResponseEntity.ok()
             .contentLength(file.length())
-            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.absolutePath + "\"")
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.name + "\"")
             .contentType(mimeType)
             .body(resource)
     }
