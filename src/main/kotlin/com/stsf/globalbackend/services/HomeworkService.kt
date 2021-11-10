@@ -127,6 +127,27 @@ class HomeworkService (
 		homeworkRepository.deleteById(homeworkId)
 	}
 
+	fun deleteHomeworkAndSubmissions(homeworkId: Long) {
+
+		val homeworkAttachments = getAttachmentsForHomework(homeworkId)
+		val homeworkSubmissions = homeworkSubmissionRepository.getAllByHomework_Id(homeworkId)
+		val homeworkSubmissionAttachments: ArrayList<HomeworkSubmissionAttachment> = ArrayList()
+
+		for (submission in homeworkSubmissions) {
+			for (attachment in homeworkSubmissionAttachmentRepository.findAllBySubmissionId(submission.id)) {
+				homeworkSubmissionAttachments.add(attachment)
+			}
+		}
+
+
+		homeworkSubmissionAttachmentRepository.deleteInBatch(homeworkSubmissionAttachments)
+		homeworkSubmissionRepository.deleteInBatch(homeworkSubmissions)
+		homeworkAttachmentRepository.deleteInBatch(homeworkAttachments)
+
+		deleteHomework(homeworkId)
+
+	}
+
 	fun submitHomework(homeworkSubmission: HomeworkSubmission, attachmentIds: List<Long>?) {
 
 		if (attachmentIds != null) {

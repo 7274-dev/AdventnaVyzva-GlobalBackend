@@ -71,7 +71,7 @@ class HomeworkController (
 			throw InsufficientPermissionsException()
 		}
 		// TODO: Check if teacher owns the class that the homework is assigned to
-		homeworkService.deleteHomework(homeworkId)
+		homeworkService.deleteHomeworkAndSubmissions(homeworkId)
 
 		return GenericResponse("Ok")
 	}
