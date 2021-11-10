@@ -135,10 +135,11 @@ class HomeworkService (
 
 		for (submission in homeworkSubmissions) {
 			for (attachment in homeworkSubmissionAttachmentRepository.findAllBySubmissionId(submission.id)) {
+				java.io.File(attachment.file.path).delete()
+
 				homeworkSubmissionAttachments.add(attachment)
 			}
 		}
-
 
 		homeworkSubmissionAttachmentRepository.deleteInBatch(homeworkSubmissionAttachments)
 		homeworkSubmissionRepository.deleteInBatch(homeworkSubmissions)
