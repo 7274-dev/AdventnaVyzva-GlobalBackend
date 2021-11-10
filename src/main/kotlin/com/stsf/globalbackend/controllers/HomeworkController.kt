@@ -52,7 +52,7 @@ class HomeworkController (
 		return GenericResponse(homeworkService.getHomeworkData(homeworkId))
 	}
 
-	@PutMapping
+	@PutMapping("")
 	fun addHomework(@RequestHeader token: String, @RequestBody homework: Homework): GenericResponse<com.stsf.globalbackend.models.Homework> {
 		val authenticatedUser = auth.getUserByToken(token)
 
@@ -63,7 +63,7 @@ class HomeworkController (
 		return GenericResponse(homeworkService.createHomework(homework))
 	}
 
-	@DeleteMapping
+	@DeleteMapping("")
 	fun deleteHomework(@RequestHeader token: String, @RequestParam homeworkId: Long): GenericResponse<String> {
 		val authenticatedUser = auth.getUserByToken(token)
 
@@ -78,7 +78,7 @@ class HomeworkController (
 
 	// Should be fixed? (I didn't test it)
 	// - Ivan
-	@PatchMapping
+	@PatchMapping("")
 	fun editHomework(@RequestHeader token: String, @RequestParam homeworkId: Long, @RequestBody homework: Homework): GenericResponse<com.stsf.globalbackend.models.Homework> {
 		val authenticatedUser = auth.getUserByToken(token)
 

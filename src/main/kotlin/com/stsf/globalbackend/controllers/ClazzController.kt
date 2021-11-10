@@ -19,7 +19,7 @@ class ClazzController (@Autowired
                        private val authenticationService: AuthenticationService) {
 
 
-	@PutMapping
+	@PutMapping("")
 	fun createClassController(@RequestHeader token: String, @RequestParam className: String): GenericResponse<Class> {
 		val authenticatedUser = authenticationService.getUserByToken(token)
 
@@ -32,7 +32,7 @@ class ClazzController (@Autowired
 	}
 
 	// Won't this cause problems with classMembers?
-	@DeleteMapping
+	@DeleteMapping("")
 	fun deleteClassController(@RequestHeader token: String, @RequestParam classId: Long): GenericResponse<String> {
 
 		val authenticatedUser = authenticationService.getUserByToken(token)
@@ -48,7 +48,7 @@ class ClazzController (@Autowired
 
 	}
 
-	@GetMapping
+	@GetMapping("")
 	fun getAllClassesController(@RequestHeader token: String): GenericResponse<List<Class>> {
 
 		val authenticatedUser = authenticationService.getUserByToken(token)
