@@ -8,7 +8,6 @@ import com.stsf.globalbackend.models.HomeworkBall
 import com.stsf.globalbackend.repositories.HomeworkBallRepository
 import com.stsf.globalbackend.repositories.HomeworkRepository
 import com.stsf.globalbackend.repositories.UserRepository
-import com.stsf.globalbackend.request.GenericResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -27,15 +26,14 @@ class HomeworkBallService(
         return homeworkBallRepository.getAllByUserId(userId)
     }
 
-    fun addBall(userId: Long, homeworkId: Long): GenericResponse<SafeHomeworkBall> {
+    fun addBall(userId: Long, homeworkId: Long): SafeHomeworkBall {
         val homework = homeworkRepository.findByIdOrNull(homeworkId) ?: throw NoSuchHomeworkException()
         val user = userRepository.findByIdOrNull(userId) ?: throw NoSuchUserException()
         var ball = HomeworkBall(-1, homework, user)
 
         ball = homeworkBallRepository.save(ball)
 
-        val safeHomeworkBall = SafeHomeworkBall(ball.id, ball.user.id, ball.homework)
-        return GenericResponse(safeHomeworkBall)
+        return SafeHomeworkBall(ball.id, ball.user.id, ball.homework)
     }
 
     fun deleteBallByUserIdAndHomeworkId(userId: Long, homeworkId: Long) {

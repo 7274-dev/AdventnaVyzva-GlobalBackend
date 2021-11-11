@@ -7,6 +7,7 @@ import com.stsf.globalbackend.repositories.HomeworkRepository
 import com.stsf.globalbackend.request.GenericResponse
 import com.stsf.globalbackend.services.AuthenticationService
 import com.stsf.globalbackend.services.HomeworkBallService
+import com.stsf.globalbackend.services.SafeHomeworkBall
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
@@ -22,7 +23,7 @@ class HomeworkBallController (
     ) {
 
     @PutMapping("")
-    fun addBall(@RequestHeader token: String, @RequestParam homeworkId: Long): GenericResponse<HomeworkBall> {
+    fun addBall(@RequestHeader token: String, @RequestParam homeworkId: Long): GenericResponse<SafeHomeworkBall> {
         val authenticatedUser = auth.getUserByToken(token)
         return GenericResponse(ballService.addBall(authenticatedUser.id, homeworkId))
 
