@@ -31,6 +31,8 @@ class HomeworkService (
 	private val homeworkAttachmentRepository: HomeworkAttachmentRepository,
 	@Autowired
 	private val fileRepository: FileRepository,
+	@Autowired
+	private val homeworkBallRepository: HomeworkBallRepository
 ) {
 
 	@Throws(NoSuchHomeworkException::class)
@@ -80,7 +82,6 @@ class HomeworkService (
 			.toInstant())
 
 		for (hw in homework) {
-
 			if (hw.fromDate.after(today)) {
 				output.add(hw)
 			}
@@ -124,11 +125,6 @@ class HomeworkService (
 	}
 
 	fun deleteHomework(homeworkId: Long) {
-		homeworkRepository.deleteById(homeworkId)
-	}
-
-	fun deleteHomeworkAndSubmissions(homeworkId: Long) {
-
 		val homeworkAttachments = getAttachmentsForHomework(homeworkId)
 		val homeworkSubmissions = homeworkSubmissionRepository.getAllByHomework_Id(homeworkId)
 		val homeworkSubmissionAttachments: ArrayList<HomeworkSubmissionAttachment> = ArrayList()
@@ -145,8 +141,10 @@ class HomeworkService (
 		homeworkSubmissionRepository.deleteInBatch(homeworkSubmissions)
 		homeworkAttachmentRepository.deleteInBatch(homeworkAttachments)
 
-		deleteHomework(homeworkId)
+		val homeworkBall = homeworkBallRepository.getByHomework_Id(homeworkId)
+		homeworkBallRepository.delete(homeworkBall)
 
+		homeworkRepository.deleteById(homeworkId)
 	}
 
 	fun submitHomework(homeworkSubmission: HomeworkSubmission, attachmentIds: List<Long>?) {

@@ -10,4 +10,6 @@ interface HomeworkBallRepository : JpaRepository<HomeworkBall, Long> {
     // @Query("from HomeworkBall hwb where hwb.user.id = :userId")
     //fun getAllByUserId(@Param("userId") userId: Long): List<HomeworkBall>
     fun getAllByUserId(userId: Long): List<HomeworkBall>
+
+    fun getByHomework_Id(homework_id: Long): HomeworkBall
 }

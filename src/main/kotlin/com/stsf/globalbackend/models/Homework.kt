@@ -23,5 +23,5 @@ data class Homework(
     var due: Date,
 
     @Temporal(TemporalType.TIMESTAMP)
-    var fromDate: Date
+    var fromDate: Date,
 )

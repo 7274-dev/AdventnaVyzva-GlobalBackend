@@ -4,17 +4,12 @@ package com.stsf.globalbackend.controllers
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.stsf.globalbackend.exceptions.InsufficientPermissionsException
 import com.stsf.globalbackend.exceptions.NoSuchHomeworkException
-import com.stsf.globalbackend.models.ClassMember
-import com.stsf.globalbackend.models.User
-import com.stsf.globalbackend.repositories.ClassMemberRepository
-import com.stsf.globalbackend.repositories.HomeworkRepository
 import com.stsf.globalbackend.request.*
 import com.stsf.globalbackend.services.AuthenticationService
 import com.stsf.globalbackend.services.ClassService
 import com.stsf.globalbackend.services.HomeworkService
 import com.stsf.globalbackend.services.MarkdownService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
@@ -71,7 +66,7 @@ class HomeworkController (
 			throw InsufficientPermissionsException()
 		}
 		// TODO: Check if teacher owns the class that the homework is assigned to
-		homeworkService.deleteHomeworkAndSubmissions(homeworkId)
+		homeworkService.deleteHomework(homeworkId)
 
 		return GenericResponse("Ok")
 	}
