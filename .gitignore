@@ -37,4 +37,4 @@ out/
 .vscode/
 
 ### Uploaded Files ###
-*.bin
+storage/*.bin
