@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile
 import java.io.*
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.*
 
 @Service
 class FileService(
@@ -35,25 +36,70 @@ class FileService(
         }
     }
 
+    fun getFileName(fileId: Long): String {
+        return (fileRepository.findByIdOrNull(fileId) ?: throw NoSuchFileException()).name
+    }
+
     fun getFile(fileId: Long): File {
         val path = (fileRepository.findByIdOrNull(fileId) ?: throw NoSuchFileException()).path
 
         return File(path)
     }
 
+    fun getFileExtension(filename: String): String {
+        if (filename.contains(".")) {
+            val extensions = filename.split(".")
+
+            if (extensions.size == 2) {
+                return "." + extensions.last()
+            }
+
+            var extension = ""
+            for (ext in extensions) {
+                if (extensions.indexOf(ext) == 0) {
+                    continue
+                }
+
+                extension += ".$ext"
+            }
+
+            return extension
+        } else {
+            return ""
+        }
+    }
+
+    fun findNextFreeFilename(path: String, filename: String): String {
+        val fileExtension = getFileExtension(filename)
+        val filenameWithoutExtension = filename.replace(fileExtension, "")
+
+        var newFilename = filename
+        var counter = 1
+
+        var filePath = appendToPath(path, newFilename)
+        while (File(filePath).exists()) {
+            newFilename = "${filenameWithoutExtension}-${counter}${fileExtension}"
+
+            filePath = appendToPath(path, newFilename)
+            counter++
+        }
+
+        return newFilename
+    }
+
 
     fun uploadFile(file: MultipartFile): com.stsf.globalbackend.models.File {
         val filename = file.originalFilename ?: file.name
-
-        if (File(filename).exists()) {
-            throw FileAlreadyExistsException(File(filename))
-        }
 
         if (!File(getStorageDirectoryPath()).exists()) {
             File(getStorageDirectoryPath()).mkdir()
         }
 
-        val newFilePath = appendToPath(getStorageDirectoryPath(), filename)
+        var newFilePath = appendToPath(getStorageDirectoryPath(), filename)
+
+        if (File(newFilePath).exists()) {
+           newFilePath = appendToPath(getStorageDirectoryPath(), findNextFreeFilename(getStorageDirectoryPath(), filename))
+        }
 
         File(newFilePath).createNewFile()
 
