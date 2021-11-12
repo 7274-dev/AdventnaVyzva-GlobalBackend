@@ -78,4 +78,10 @@ class ClassService (
 		return users
 	}
 
+	fun changeClassName(classId: Long, className: String): Class {
+		val clazz = classRepository.findByIdOrNull(classId) ?: throw NoSuchClassException()
+
+		return classRepository.save(Class(clazz.id, className))
+	}
+
 }

@@ -19,6 +19,12 @@ class ClazzController (@Autowired
                        private val authenticationService: AuthenticationService) {
 
 
+
+	@GetMapping("/id")
+	fun getClass(@RequestParam classId: Long): GenericResponse<Class> {
+		return GenericResponse(classService.getClassById(classId))
+	}
+
 	@PutMapping("")
 	fun createClassController(@RequestHeader token: String, @RequestParam className: String): GenericResponse<Class> {
 		val authenticatedUser = authenticationService.getUserByToken(token)
@@ -40,8 +46,6 @@ class ClazzController (@Autowired
 		if (!authenticatedUser.isTeacher && !authenticatedUser.isAdmin) {
 			throw InsufficientPermissionsException()
 		}
-
-
 
 		classService.deleteClassAndOrphanClassMembers(classId)
 		return GenericResponse("Ok")
@@ -75,6 +79,11 @@ class ClazzController (@Autowired
 		// NOTE: Admins should have the ability to add any user to any class
 		return GenericResponse(classService.addUserToClass(userAndClassId.userId, userAndClassId.classId))
 
+	}
+
+	@PatchMapping("")
+	fun editClassName(@RequestHeader token: String, @RequestParam className: String, @RequestParam classId: Long): GenericResponse<Class> {
+		return GenericResponse(classService.changeClassName(classId, className))
 	}
 
 	@DeleteMapping("/member")
