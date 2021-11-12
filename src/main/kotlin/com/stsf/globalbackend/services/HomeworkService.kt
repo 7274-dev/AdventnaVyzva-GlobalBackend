@@ -144,8 +144,10 @@ class HomeworkService (
 		homeworkSubmissionRepository.deleteInBatch(homeworkSubmissions)
 		homeworkAttachmentRepository.deleteInBatch(homeworkAttachments)
 
-		val homeworkBall = homeworkBallRepository.getByHomework_Id(homeworkId)
-		homeworkBallRepository.delete(homeworkBall)
+		val homeworkBall = homeworkBallRepository.findByHomeworkId(homeworkId)
+		if (homeworkBall != null) {
+			homeworkBallRepository.delete(homeworkBall)
+		}
 
 		homeworkRepository.deleteById(homeworkId)
 	}
