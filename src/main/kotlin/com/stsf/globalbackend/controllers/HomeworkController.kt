@@ -35,7 +35,7 @@ class HomeworkController (
 	@PostMapping("/attachment")
 	fun addAttachmentToHomework(@RequestHeader token: String, @RequestBody attachment: HomeworkAttachment): GenericResponse<com.stsf.globalbackend.models.HomeworkAttachment> {
 		return GenericResponse(homeworkService.addAttachmentToHomeworkSubmission(attachment))
-  }
+	}
   
 	@PostMapping("/mdtohtml")
 	fun getHtmlFromMarkdown(@RequestBody markdown: String): GenericResponse<String> {
@@ -133,7 +133,25 @@ class HomeworkController (
 		homeworkService.submitHomework(com.stsf.globalbackend.models.HomeworkSubmission(-1, homework, authenticatedUser, homeworkSubmission.content), homeworkSubmission.fileIds)
 
 		return GenericResponse("Ok")
+	}
 
+	@GetMapping("/submissions/user")
+	fun getSubmittedHomeworkByUser(@RequestHeader token: String, @RequestParam userId: Long): GenericResponse<List<SafeHomeworkSubmission>> {
+		val authenticatedUser = auth.getUserByToken(token)
+
+		if (!authenticatedUser.isTeacher && !authenticatedUser.isAdmin) {
+			throw InsufficientPermissionsException()
+		}
+
+		val submissions = homeworkService.getSubmissionsByUser(userId)
+		val safeSubmissions: MutableList<SafeHomeworkSubmission> = mutableListOf()
+
+		for (submission in submissions) {
+			val safeSubmission = SafeHomeworkSubmission(submission.id, submission.user.id, submission.content, submission.homework)
+			safeSubmissions.add(safeSubmission)
+		}
+
+		return GenericResponse(safeSubmissions)
 	}
 
 	@GetMapping("/submissions")
@@ -156,3 +174,10 @@ class HomeworkController (
 		return GenericResponse(homeworkService.getSubmissions(homeworkId, authenticatedUser.id))
 	}
 }
+
+data class SafeHomeworkSubmission(
+	val id: Long,
+	val userId: Long,
+	val content: String?,
+	val homework: com.stsf.globalbackend.models.Homework
+)

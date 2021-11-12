@@ -48,8 +48,11 @@ class HomeworkService (
 		val attachment = HomeworkAttachment(-1, homework, file)
 
 		return homeworkAttachmentRepository.save(attachment)
-  }
+  	}
 
+	fun getSubmissionsByUser(userId: Long): List<HomeworkSubmission> {
+		return homeworkSubmissionRepository.getAllByHomework_User_Id(userId)
+	}
 
 	fun getHomeworkById(homeworkId: Long): Homework {
 		if (!homeworkRepository.existsById(homeworkId)) {

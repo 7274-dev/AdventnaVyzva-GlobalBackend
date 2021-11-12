@@ -1,9 +1,6 @@
 package com.stsf.globalbackend.controllers
 
-import com.stsf.globalbackend.exceptions.InsufficientPermissionsException
 import com.stsf.globalbackend.models.HomeworkBall
-import com.stsf.globalbackend.repositories.HomeworkBallRepository
-import com.stsf.globalbackend.repositories.HomeworkRepository
 import com.stsf.globalbackend.request.GenericResponse
 import com.stsf.globalbackend.services.AuthenticationService
 import com.stsf.globalbackend.services.HomeworkBallService
@@ -25,8 +22,8 @@ class HomeworkBallController (
     @PutMapping("")
     fun addBall(@RequestHeader token: String, @RequestParam homeworkId: Long): GenericResponse<SafeHomeworkBall> {
         val authenticatedUser = auth.getUserByToken(token)
-        return GenericResponse(ballService.addBall(authenticatedUser.id, homeworkId))
 
+        return GenericResponse(ballService.addBall(authenticatedUser.id, homeworkId))
     }
 
     @DeleteMapping("")
