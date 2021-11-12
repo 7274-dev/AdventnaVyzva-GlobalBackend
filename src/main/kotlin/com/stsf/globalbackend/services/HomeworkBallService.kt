@@ -17,42 +17,22 @@ class HomeworkBallService(
     @Autowired
     private val homeworkBallRepository: HomeworkBallRepository,
     @Autowired
-    private val homeworkRepository: HomeworkRepository,
-    @Autowired
-    private val userRepository: UserRepository,
+    private val homeworkRepository: HomeworkRepository
 ) {
+    fun createHomeworkBall(homeworkId: Long): HomeworkBall {
+        val homework = homeworkRepository.findByIdOrNull(homeworkId) ?: throw NoSuchHomeworkException()
 
-    fun getAllBallsByUserId(userId: Long): List<HomeworkBall> {
-        return homeworkBallRepository.getAllByUserId(userId)
+        val ball = HomeworkBall(-1, homework)
+        return homeworkBallRepository.save(ball)
     }
 
-    fun addBall(userId: Long, homeworkId: Long): SafeHomeworkBall {
-        val homework = homeworkRepository.findByIdOrNull(homeworkId) ?: throw NoSuchHomeworkException()
-        val user = userRepository.findByIdOrNull(userId) ?: throw NoSuchUserException()
-        var ball = HomeworkBall(-1, homework, user)
+    fun deleteHomeworkBall(homeworkBallId: Long) {
+        val ball = homeworkBallRepository.findByIdOrNull(homeworkBallId) ?: throw NoSuchHomeworkException()
 
-        ball = homeworkBallRepository.save(ball)
-
-        return SafeHomeworkBall(ball.id, ball.user.id, ball.homework)
-    }
-
-    fun deleteBallByUserIdAndHomeworkId(userId: Long, homeworkId: Long) {
-        val homework = homeworkRepository.findByIdOrNull(homeworkId) ?: throw NoSuchHomeworkException()
-        val user = userRepository.findByIdOrNull(userId) ?: throw NoSuchUserException()
-        val ball = HomeworkBall(-1, homework, user)
         homeworkBallRepository.delete(ball)
     }
 
-    fun deleteBallById(ballId: Long) {
-        val ball = homeworkBallRepository.findByIdOrNull(ballId) ?: throw NoSuchBallException()
-        homeworkBallRepository.delete(ball)
+    fun doesHomeworkHaveBall(homeworkId: Long): Boolean {
+        return homeworkBallRepository.findByHomeworkId(homeworkId) != null
     }
-
 }
-
-// homework ball without user credentials
-data class SafeHomeworkBall(
-    val id: Long,
-    val userId: Long,
-    val homework: Homework
-)

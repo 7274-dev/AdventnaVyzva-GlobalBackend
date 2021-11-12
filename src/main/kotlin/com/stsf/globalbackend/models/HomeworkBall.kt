@@ -9,8 +9,5 @@ data class HomeworkBall(
     val id: Long,
 
     @OneToOne
-    val homework: Homework,
-
-    @ManyToOne
-    val user: User
+    val homework: Homework
 )
