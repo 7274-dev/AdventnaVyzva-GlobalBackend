@@ -51,7 +51,7 @@ class HomeworkService (
   	}
 
 	fun getSubmissionsByUser(userId: Long): List<HomeworkSubmission> {
-		return homeworkSubmissionRepository.getAllByHomework_User_Id(userId)
+		return homeworkSubmissionRepository.getAllByUser_Id(userId)
 	}
 
 	fun getHomeworkById(homeworkId: Long): Homework {
