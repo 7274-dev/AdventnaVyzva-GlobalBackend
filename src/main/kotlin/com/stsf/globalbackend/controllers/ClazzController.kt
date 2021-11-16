@@ -103,9 +103,9 @@ class ClazzController (@Autowired
 	}
 
 	@GetMapping("/member")
-	fun getAllUsersFromClassController(@RequestHeader token: String, @RequestParam classId: Long): GenericResponse<List<User>> {
+	fun getAllUsersFromClassController(@RequestHeader token: String, @RequestParam classId: Long): GenericResponse<List<Long>> {
 		val authenticatedUser = authenticationService.getUserByToken(token)
-		val users = classService.getAllUsersInClass(classId)
+		val users = classService.getAllUsersInClass(classId).map { user -> user.id }
 
 		if (!authenticatedUser.isTeacher) {
 			throw InsufficientPermissionsException()
