@@ -32,7 +32,7 @@ class AdminController(
 
         val student = adminService.getStudentData(studentId)
         if (student.isTeacher || student.isAdmin) {
-            throw InsufficientPermissionsException()
+            throw NoSuchUserException()
         }
 
         return GenericResponse(student)
