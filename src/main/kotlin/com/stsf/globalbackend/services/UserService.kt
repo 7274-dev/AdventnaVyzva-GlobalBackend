@@ -24,7 +24,7 @@ class UserService(
         return user.isAdmin
     }
 
-    fun isStudent(userId: Long): Boolean = !isTeacher(userId)
+    fun isStudent(userId: Long): Boolean = !isTeacher(userId) && !isAdmin(userId)
 
     fun findAllUsersNotInClass(): List<UserIdAndName> {
         return userRepository.findAllUsersNotInClass()
