@@ -3,10 +3,12 @@ package com.stsf.globalbackend.controllers
 import com.stsf.globalbackend.exceptions.InsufficientPermissionsException
 import com.stsf.globalbackend.models.Class
 import com.stsf.globalbackend.models.ClassMember
+import com.stsf.globalbackend.repositories.UserRepository
 import com.stsf.globalbackend.request.GenericResponse
 import com.stsf.globalbackend.request.UserAndClassId
 import com.stsf.globalbackend.services.AuthenticationService
 import com.stsf.globalbackend.services.ClassService
+import com.stsf.globalbackend.services.UserService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 
@@ -15,7 +17,10 @@ import org.springframework.web.bind.annotation.*
 class ClazzController (@Autowired
                        private val classService: ClassService,
                        @Autowired
-                       private val authenticationService: AuthenticationService) {
+                       private val authenticationService: AuthenticationService,
+					   @Autowired
+					   private val userService: UserService
+) {
 
 
 
@@ -115,18 +120,14 @@ class ClazzController (@Autowired
 	}
 
 	@GetMapping("/member/notinclass")
-	fun getAllUsersNotFromClass(@RequestHeader token: String, @RequestParam classId: Long): GenericResponse<List<SafeClassMember>> {
+	fun getAllUsersNotFromClass(@RequestHeader token: String, @RequestParam classId: Long): GenericResponse<List<Long>> {
 		val authenticatedUser = authenticationService.getUserByToken(token)
 
 		if (!authenticatedUser.isAdmin && !authenticatedUser.isTeacher) {
 			throw InsufficientPermissionsException()
 		}
 
-		return GenericResponse(classService.getAllUsersNotInClass(classId).map { classMember ->
-			SafeClassMember(classMember.user.id,
-					classMember.clazz.id,
-					classMember.id)
-		})
+		return GenericResponse(userService.findAllUsersNotInClass())
 	}
 
 }

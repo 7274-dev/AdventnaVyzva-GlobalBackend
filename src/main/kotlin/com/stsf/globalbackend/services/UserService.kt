@@ -24,4 +24,6 @@ class UserService(
     }
 
     fun isStudent(userId: Long): Boolean = !isTeacher(userId)
+
+    fun findAllUsersNotInClass(): List<Long> = userRepository.findAllUsersNotInClass()
 }

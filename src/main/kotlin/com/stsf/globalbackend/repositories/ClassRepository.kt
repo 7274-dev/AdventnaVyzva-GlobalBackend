@@ -12,5 +12,4 @@ interface ClassRepository : JpaRepository<Class, Long> {
 	fun findAllByNameContains(s: String): List<Class>
 
 
-
 }
