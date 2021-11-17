@@ -2,7 +2,11 @@ package com.stsf.globalbackend.services
 
 import com.stsf.globalbackend.exceptions.InsufficientPermissionsException
 import com.stsf.globalbackend.exceptions.NoSuchUserException
+import com.stsf.globalbackend.models.HomeworkSubmission
 import com.stsf.globalbackend.models.User
+import com.stsf.globalbackend.repositories.ClassMemberRepository
+import com.stsf.globalbackend.repositories.HomeworkSubmissionAttachmentRepository
+import com.stsf.globalbackend.repositories.HomeworkSubmissionRepository
 import com.stsf.globalbackend.repositories.UserRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
@@ -13,7 +17,13 @@ import kotlin.random.nextInt
 @Service
 class AdminService(
     @Autowired
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    @Autowired
+    private val homeworkSubmissionRepository: HomeworkSubmissionRepository,
+    @Autowired
+    private val homeworkSubmissionAttachmentRepository: HomeworkSubmissionAttachmentRepository,
+    @Autowired
+    private val classMemberRepository: ClassMemberRepository
 ) {
 
     fun getUserPassword(userId: Long): String { // :(((
@@ -87,6 +97,23 @@ class AdminService(
     }
 
     fun deleteUser(userId: Long) {
+        val allSubmittedHomework = homeworkSubmissionRepository.getAllByUser_Id(userId)
+
+        for (homeworkSubmission in allSubmittedHomework) {
+            val attachments = homeworkSubmissionAttachmentRepository.findAllBySubmissionId(homeworkSubmission.id)
+
+            for (attachment in attachments) {
+                homeworkSubmissionAttachmentRepository.delete(attachment)
+            }
+
+            homeworkSubmissionRepository.delete(homeworkSubmission)
+        }
+
+        val classMemberships = classMemberRepository.findByUserId(userId)
+        for (membership in classMemberships) {
+            classMemberRepository.delete(membership)
+        }
+
         userRepository.deleteById(userId)
     }
 
