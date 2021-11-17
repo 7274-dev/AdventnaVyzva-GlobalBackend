@@ -183,9 +183,5 @@ class HomeworkService (
 	fun getHomeworkData(homeworkId: Long): Homework {
 		return homeworkRepository.findByIdOrNull(homeworkId) ?: throw NoSuchHomeworkException()
 	}
-
-    fun isHomeworkDone(homeworkId: Long): Boolean {
-		homeworkSubmissionRepository.getAllByHomework_Id()
-    }
 }
 
