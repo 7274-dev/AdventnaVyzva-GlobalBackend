@@ -16,4 +16,7 @@ interface ClassMemberRepository : JpaRepository<ClassMember, Long> {
 
 	@Query("from ClassMember c where c.clazz.id = :id")
 	fun findAllByClassId(@Param("id") classId: Long): List<ClassMember>
+
+	@Query("from ClassMember c where c.clazz.id <> :id")
+	fun getAllByClassIdNotEqualTo(@Param("id") classId: Long): List<ClassMember>
 }

@@ -32,6 +32,10 @@ class ClassService (
 
 	}
 
+	fun getAllUsersNotInClass(classId: Long): List<ClassMember> {
+		return classMemberRepository.getAllByClassIdNotEqualTo(classId)
+	}
+
 	fun removeUserFromClass(userId: Long, classId: Long) {
 		val members = classMemberRepository.findAllByClassAndUserId(classId, userId)
 		classMemberRepository.deleteInBatch(members)
