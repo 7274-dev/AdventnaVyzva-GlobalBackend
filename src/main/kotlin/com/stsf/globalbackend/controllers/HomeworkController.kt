@@ -128,7 +128,7 @@ class HomeworkController (
 			homeworkSubmission.content = ""
 		}
 
-		val homework = homeworkService.getHomeworkData(homeworkSubmission.homeworkId) ?: throw NoSuchHomeworkException()
+		val homework = homeworkService.getHomeworkData(homeworkSubmission.homeworkId)
 
 		homeworkService.submitHomework(com.stsf.globalbackend.models.HomeworkSubmission(-1, homework, authenticatedUser, homeworkSubmission.content), homeworkSubmission.fileIds)
 
