@@ -173,6 +173,11 @@ class HomeworkController (
 
 		return GenericResponse(homeworkService.getSubmissions(homeworkId, authenticatedUser.id))
 	}
+
+	@GetMapping("/done")
+	fun isHomeworkDone(@RequestParam homeworkId: Long, @RequestParam userId: Long): GenericResponse<Boolean> {
+		return GenericResponse(homeworkService.getSubmissions(homeworkId, userId).isNotEmpty())
+	}
 }
 
 data class SafeHomeworkSubmission(
