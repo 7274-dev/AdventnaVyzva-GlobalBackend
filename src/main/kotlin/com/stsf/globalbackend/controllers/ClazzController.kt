@@ -3,7 +3,7 @@ package com.stsf.globalbackend.controllers
 import com.stsf.globalbackend.exceptions.InsufficientPermissionsException
 import com.stsf.globalbackend.models.Class
 import com.stsf.globalbackend.models.ClassMember
-import com.stsf.globalbackend.repositories.UserRepository
+import com.stsf.globalbackend.repositories.UserIdAndName
 import com.stsf.globalbackend.request.GenericResponse
 import com.stsf.globalbackend.request.UserAndClassId
 import com.stsf.globalbackend.services.AuthenticationService
@@ -120,7 +120,7 @@ class ClazzController (@Autowired
 	}
 
 	@GetMapping("/member/notinclass")
-	fun getAllUsersNotFromClass(@RequestHeader token: String, @RequestParam classId: Long): GenericResponse<List<Long>> {
+	fun getAllUsersNotFromClass(@RequestHeader token: String, @RequestParam classId: Long): GenericResponse<List<UserIdAndName>> {
 		val authenticatedUser = authenticationService.getUserByToken(token)
 
 		if (!authenticatedUser.isAdmin && !authenticatedUser.isTeacher) {
