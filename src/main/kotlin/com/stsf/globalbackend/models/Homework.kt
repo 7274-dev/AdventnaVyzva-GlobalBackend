@@ -14,6 +14,7 @@ data class Homework(
     @ManyToOne
     var clazz: Class,
 
+    @Column(length = 2048)
     var title: String,
 
     @Column(length = 8192)
