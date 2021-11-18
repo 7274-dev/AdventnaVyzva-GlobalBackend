@@ -93,7 +93,7 @@ class AdminService(
     }
 
     fun createAdminAccount(username: String, password: String? = null, name: String): User {
-        return createUser(username, password, name, true, true)
+        return createUser(username, password, name, true, false)
     }
 
     fun deleteUser(userId: Long) {
