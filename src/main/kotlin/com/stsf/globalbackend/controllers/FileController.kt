@@ -43,4 +43,10 @@ class FileController(
             .body(resource)
     }
 
+    @GetMapping("/type")
+    fun getFileExtension(@RequestParam fileId: Long): GenericResponse<String> {
+        val filePath = fileService.getFile(fileId)
+        return GenericResponse(fileService.getFileExtension(filePath.path))
+    }
+
 }
