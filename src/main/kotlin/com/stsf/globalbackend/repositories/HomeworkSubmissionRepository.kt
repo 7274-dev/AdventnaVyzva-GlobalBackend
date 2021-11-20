@@ -9,6 +9,6 @@ interface HomeworkSubmissionRepository : JpaRepository<HomeworkSubmission, Long>
     fun getAllByHomework_Id(homeworkId: Long): List<HomeworkSubmission>
     fun getAllByUser_Id(userId: Long): List<HomeworkSubmission>
 
-    @Query("select HomeworkSubmission as s from HomeworkSubmission where s.id = :userId and s.homework.id = :homeworkId")
+    @Query("from HomeworkSubmission s where s.user.id = :userId and s.homework.id = :homeworkId")
     fun getAllByUserAndHomeworkId(@Param("userId") userId: Long, @Param("homeworkId") homeworkId: Long): List<HomeworkSubmission>
 }
