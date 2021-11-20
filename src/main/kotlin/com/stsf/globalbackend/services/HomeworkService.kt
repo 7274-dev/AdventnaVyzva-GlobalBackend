@@ -163,11 +163,9 @@ class HomeworkService (
 		val submissions = homeworkSubmissionRepository.findAll()
 
 		for (submission in submissions) {
-
 			if (submission.user.id == userId) {
 				output.add(submission)
 			}
-
 		}
 
 		return output
