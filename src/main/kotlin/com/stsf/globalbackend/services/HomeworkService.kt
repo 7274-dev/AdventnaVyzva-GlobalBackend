@@ -154,25 +154,15 @@ class HomeworkService (
 		homeworkRepository.deleteById(homeworkId)
 	}
 
-	fun submitHomework(homeworkSubmission: HomeworkSubmission, attachmentIds: List<Long>?): HomeworkSubmission {
-		val attachments = attachmentIds?.stream()
-			?.map { fileRepository.findByIdOrNull(it) }
-			?.toList()
+	fun submitHomework(homeworkSubmission: HomeworkSubmission, attachmentIds: List<Long>): HomeworkSubmission {
+		val homeworkSubmissionSaved = homeworkSubmissionRepository.save(homeworkSubmission)
 
-		val homework = homeworkSubmission.homework
+		for (attachmentId in attachmentIds) {
+            val attachment = fileRepository.findByIdOrNull(attachmentId) ?: continue
+            homeworkSubmissionAttachmentRepository.save(HomeworkSubmissionAttachment(-1, homeworkSubmissionSaved, attachment))
+        }
 
-		if (attachments != null) {
-			for (attachment in attachments) {
-				if (attachment == null) {
-					continue
-				}
-
-				homeworkAttachmentRepository.save(HomeworkAttachment(-1, homework, attachment))
-			}
-		}
-
-
-		return homeworkSubmissionRepository.save(homeworkSubmission)
+		return homeworkSubmissionSaved
 	}
 
 	fun getSubmissions(homeworkId: Long): MutableList<com.stsf.globalbackend.request.HomeworkSubmission> {
