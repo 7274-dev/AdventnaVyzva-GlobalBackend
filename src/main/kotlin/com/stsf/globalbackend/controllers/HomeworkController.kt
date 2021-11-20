@@ -117,7 +117,7 @@ class HomeworkController (
 			return GenericResponse(homeworkService.getHomeworkByDateAndClass(classId, date))
 	}
 	@PostMapping("/submissions")
-	fun submitHomework(@RequestHeader token: String, @RequestBody homeworkSubmission: HomeworkSubmission): GenericResponse<String> {
+	fun submitHomework(@RequestHeader token: String, @RequestBody homeworkSubmission: HomeworkSubmission): GenericResponse<com.stsf.globalbackend.models.HomeworkSubmission> {
 		val authenticatedUser = auth.getUserByToken(token)
 
 		if (homeworkService.getHomeworkById(homeworkSubmission.homeworkId) !in homeworkService.getAllHomeworksByStudent(authenticatedUser.id)) {
@@ -130,9 +130,9 @@ class HomeworkController (
 
 		val homework = homeworkService.getHomeworkData(homeworkSubmission.homeworkId)
 
-		homeworkService.submitHomework(com.stsf.globalbackend.models.HomeworkSubmission(-1, homework, authenticatedUser, homeworkSubmission.content), homeworkSubmission.fileIds)
+		val submission = homeworkService.submitHomework(com.stsf.globalbackend.models.HomeworkSubmission(-1, homework, authenticatedUser, homeworkSubmission.content), homeworkSubmission.fileIds)
 
-		return GenericResponse("Ok")
+		return GenericResponse(submission)
 	}
 
 	@GetMapping("/submissions/user")

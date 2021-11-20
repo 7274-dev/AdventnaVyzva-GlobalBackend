@@ -14,6 +14,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.streams.toList
 
 @Service
 class HomeworkService (
@@ -152,10 +153,25 @@ class HomeworkService (
 		homeworkRepository.deleteById(homeworkId)
 	}
 
-	fun submitHomework(homeworkSubmission: HomeworkSubmission, attachmentIds: List<Long>?) {
-		val attachments = attachmentIds?.stream()?.map { homeworkAttachmentRepository.findByIdOrNull(it) } ?: {}
+	fun submitHomework(homeworkSubmission: HomeworkSubmission, attachmentIds: List<Long>?): HomeworkSubmission {
+		val attachments = attachmentIds?.stream()
+			?.map { fileRepository.findByIdOrNull(it) }
+			?.toList()
 
-		println(attachments)
+		val homework = homeworkSubmission.homework
+
+		if (attachments != null) {
+			for (attachment in attachments) {
+				if (attachment == null) {
+					continue
+				}
+
+				homeworkAttachmentRepository.save(HomeworkAttachment(-1, homework, attachment))
+			}
+		}
+
+
+		return homeworkSubmissionRepository.save(homeworkSubmission)
 	}
 
 	fun getSubmissions(homeworkId: Long, userId: Long): List<HomeworkSubmission> {
