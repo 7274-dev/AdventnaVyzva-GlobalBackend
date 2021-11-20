@@ -174,15 +174,14 @@ class HomeworkService (
 		return homeworkSubmissionRepository.save(homeworkSubmission)
 	}
 
-	fun getSubmissions(homeworkId: Long, userId: Long): List<HomeworkSubmission> {
-		val output = mutableListOf<HomeworkSubmission>()
-		val submissions = homeworkSubmissionRepository.findAll()
+	fun getSubmissions(homeworkId: Long): MutableList<com.stsf.globalbackend.request.HomeworkSubmission> {
+		val output: MutableList<com.stsf.globalbackend.request.HomeworkSubmission> = mutableListOf()
+		val submissions: List<HomeworkSubmission> = homeworkSubmissionRepository.getAllByHomework_Id(homeworkId)
 
 		for (submission in submissions) {
-			if (submission.user.id == userId) {
-				output.add(submission)
-			}
-		}
+			val attachments = homeworkSubmissionAttachmentRepository.findAllBySubmissionId(submission.id)
+            output.add(com.stsf.globalbackend.request.HomeworkSubmission(homeworkId, submission.content, attachments.map { it.file.id }))
+        }
 
 		return output
 	}
