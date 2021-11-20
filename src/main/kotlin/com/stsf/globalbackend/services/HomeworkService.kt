@@ -7,6 +7,7 @@ import com.stsf.globalbackend.exceptions.NoSuchFileException
 import com.stsf.globalbackend.models.*
 import com.stsf.globalbackend.repositories.*
 import com.stsf.globalbackend.exceptions.NoSuchHomeworkException
+import com.stsf.globalbackend.request.UserIdAndName
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -180,7 +181,7 @@ class HomeworkService (
 
 		for (submission in submissions) {
 			val attachments = homeworkSubmissionAttachmentRepository.findAllBySubmissionId(submission.id)
-            output.add(com.stsf.globalbackend.request.HomeworkSubmission(homeworkId, submission.content, attachments.map { it.file.id }))
+            output.add(com.stsf.globalbackend.request.HomeworkSubmission(submission.id, UserIdAndName(submission.user.id, submission.user.name), homeworkId, submission.content, attachments.map { it.file.id }))
         }
 
 		return output
