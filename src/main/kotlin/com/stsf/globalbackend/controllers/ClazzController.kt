@@ -92,7 +92,6 @@ class ClazzController (@Autowired
 
 	@DeleteMapping("/member")
 	fun removeUserFromClassController(@RequestHeader token: String, @RequestBody userAndClassId: UserAndClassId): GenericResponse<String> {
-
 		val authenticatedUser = authenticationService.getUserByToken(token)
 
 		if (!authenticatedUser.isTeacher && !authenticatedUser.isAdmin) {
@@ -111,7 +110,7 @@ class ClazzController (@Autowired
 		val authenticatedUser = authenticationService.getUserByToken(token)
 		val users = classService.getAllUsersInClass(classId).map { user -> user.id }
 
-		if (!authenticatedUser.isTeacher) {
+		if (!authenticatedUser.isTeacher && !authenticatedUser.isAdmin) {
 			throw InsufficientPermissionsException()
 		}
 		// TODO: Check if teacher owns this class
