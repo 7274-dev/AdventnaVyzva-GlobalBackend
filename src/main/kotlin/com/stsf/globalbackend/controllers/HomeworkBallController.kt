@@ -22,7 +22,7 @@ class HomeworkBallController (
     fun createBall(@RequestHeader token: String, @RequestParam homeworkId: Long): GenericResponse<HomeworkBall> {
         val authenticatedUser = authenticationService.getUserByToken(token)
 
-        if (!authenticatedUser.isTeacher || !authenticatedUser.isAdmin) {
+        if (!authenticatedUser.isTeacher && !authenticatedUser.isAdmin) {
             throw InsufficientPermissionsException()
         }
 
@@ -33,7 +33,7 @@ class HomeworkBallController (
     fun deleteBall(@RequestHeader token: String, @RequestParam ballId: Long): GenericResponse<String> {
         val authenticatedUser = authenticationService.getUserByToken(token)
 
-        if (!authenticatedUser.isTeacher || !authenticatedUser.isAdmin) {
+        if (!authenticatedUser.isTeacher && !authenticatedUser.isAdmin) {
             throw InsufficientPermissionsException()
         }
 

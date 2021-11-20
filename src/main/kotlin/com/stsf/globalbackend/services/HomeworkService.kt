@@ -153,16 +153,9 @@ class HomeworkService (
 	}
 
 	fun submitHomework(homeworkSubmission: HomeworkSubmission, attachmentIds: List<Long>?) {
+		val attachments = attachmentIds?.stream()?.map { homeworkAttachmentRepository.findByIdOrNull(it) } ?: {}
 
-		if (attachmentIds != null) {
-			for (attachment in attachmentIds) {
-				val attachmentId = fileRepository.findByIdOrNull(attachment) ?: throw NoSuchFileException()
-				val attachment = HomeworkSubmissionAttachment(-1, homeworkSubmission, attachmentId)
-
-				homeworkSubmissionAttachmentRepository.save(attachment)
-			}
-		}
-		homeworkSubmissionRepository.save(homeworkSubmission)
+		println(attachments)
 	}
 
 	fun getSubmissions(homeworkId: Long, userId: Long): List<HomeworkSubmission> {
