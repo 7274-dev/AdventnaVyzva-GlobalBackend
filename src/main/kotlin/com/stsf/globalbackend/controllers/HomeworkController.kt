@@ -167,7 +167,7 @@ class HomeworkController (
 
 	@GetMapping("/done")
 	fun isHomeworkDone(@RequestParam homeworkId: Long): GenericResponse<Boolean> {
-		return GenericResponse(homeworkService.getSubmissions(homeworkId).isEmpty())
+		return GenericResponse(homeworkService.getSubmissions(homeworkId).isNotEmpty())
 	}
 }
 
