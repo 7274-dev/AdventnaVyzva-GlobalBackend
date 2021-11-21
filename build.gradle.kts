@@ -34,20 +34,22 @@ repositories {
 }
 
 dependencies {
-    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("com.google.guava:guava:30.1.1-jre")
-    implementation("org.hibernate:hibernate-core:5.4.31.Final")
-    implementation("org.springframework.boot:spring-boot-starter-web")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("io.springfox:springfox-swagger2:3.0.0")
+    implementation("io.springfox:springfox-swagger-ui:3.0.0")
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor:2.5.6")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa:2.5.6")
+    implementation("com.google.guava:guava:31.0.1-jre")
+    implementation("org.hibernate:hibernate-core:5.6.1.Final")
+    implementation("org.springframework.boot:spring-boot-starter-web:2.5.6")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("com.andreapivetta.kolor:kolor:1.0.0")
-    compileOnly("org.projectlombok:lombok")
-    runtimeOnly("org.postgresql:postgresql")
-    annotationProcessor("org.projectlombok:lombok")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    implementation("org.jetbrains:markdown:0.1.45")
+    compileOnly("org.projectlombok:lombok:1.18.22")
+    runtimeOnly("org.postgresql:postgresql:42.3.1")
+    annotationProcessor("org.projectlombok:lombok:1.18.22")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:2.5.6")
+    implementation("org.jetbrains:markdown:0.2.4")
 
 
 }
