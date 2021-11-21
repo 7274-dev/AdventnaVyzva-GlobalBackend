@@ -155,19 +155,19 @@ class HomeworkController (
 	}
 
 	@GetMapping("/submissions")
-	fun getSubmittedHomework(@RequestHeader token: String, @RequestParam homeworkId: Long): GenericResponse<List<com.stsf.globalbackend.models.HomeworkSubmission>> {
+	fun getSubmittedHomework(@RequestHeader token: String, @RequestParam homeworkId: Long): GenericResponse<List<HomeworkSubmission>> {
 		val authenticatedUser = auth.getUserByToken(token)
 
 		if (!authenticatedUser.isAdmin && !authenticatedUser.isTeacher) {
 			throw InsufficientPermissionsException()
 		}
 
-		return GenericResponse(homeworkService.getSubmissions(homeworkId, authenticatedUser.id))
+		return GenericResponse(homeworkService.getSubmissions(homeworkId))
 	}
 
 	@GetMapping("/done")
-	fun isHomeworkDone(@RequestParam homeworkId: Long, @RequestParam userId: Long): GenericResponse<Boolean> {
-		return GenericResponse(homeworkService.getSubmissions(homeworkId, userId).isEmpty())
+	fun isHomeworkDone(@RequestParam homeworkId: Long): GenericResponse<Boolean> {
+		return GenericResponse(homeworkService.getSubmissions(homeworkId).isEmpty())
 	}
 }
 
