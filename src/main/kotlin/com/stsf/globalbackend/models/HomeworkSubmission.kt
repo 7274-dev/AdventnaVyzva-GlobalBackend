@@ -16,6 +16,6 @@ data class HomeworkSubmission (
     val user: User,
 
     @Column(length = 8192)
-    val content: String?,
+    val content: String,
 
     )
