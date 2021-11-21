@@ -77,7 +77,7 @@ class HomeworkController (
 	fun editHomework(@RequestHeader token: String, @RequestParam homeworkId: Long, @RequestBody homework: Homework): GenericResponse<com.stsf.globalbackend.models.Homework> {
 		val authenticatedUser = auth.getUserByToken(token)
 
-		if (!authenticatedUser.isTeacher) {
+		if (!authenticatedUser.isTeacher && !authenticatedUser.isAdmin) {
 			throw InsufficientPermissionsException()
 		}
 
@@ -122,10 +122,6 @@ class HomeworkController (
 
 		if (homeworkService.getHomeworkById(homeworkSubmission.homeworkId) !in homeworkService.getAllHomeworksByStudent(authenticatedUser.id)) {
 			throw InsufficientPermissionsException()
-		}
-
-		if (homeworkSubmission.content == null) {
-			homeworkSubmission.content = ""
 		}
 
 		val homework = homeworkService.getHomeworkData(homeworkSubmission.homeworkId)
