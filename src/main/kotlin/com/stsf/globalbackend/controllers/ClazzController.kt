@@ -119,7 +119,7 @@ class ClazzController (@Autowired
 	}
 
 	@GetMapping("/member/notinclass")
-	fun getAllUsersNotFromClass(@RequestHeader token: String, @RequestParam classId: Long): GenericResponse<List<UserIdAndName>> {
+	fun getAllUsersNotFromClass(@RequestHeader token: String): GenericResponse<List<UserIdAndName>> {
 		val authenticatedUser = authenticationService.getUserByToken(token)
 
 		if (!authenticatedUser.isAdmin && !authenticatedUser.isTeacher) {
