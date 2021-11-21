@@ -171,7 +171,7 @@ class HomeworkService (
 
 		for (submission in submissions) {
 			val attachments = homeworkSubmissionAttachmentRepository.findAllBySubmissionId(submission.id)
-            output.add(com.stsf.globalbackend.request.HomeworkSubmission(submission.id, UserIdAndName(submission.user.id, submission.user.name), homeworkId, submission.content, attachments.map { it.file.id }))
+            output.add(com.stsf.globalbackend.request.HomeworkSubmission(submission.id, UserIdAndName(submission.user.id, submission.user.name), attachments, homeworkId, submission.content, emptyList()))
         }
 
 		return output
