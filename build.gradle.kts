@@ -34,8 +34,9 @@ repositories {
 }
 
 dependencies {
-    implementation("io.springfox:springfox-swagger2:3.0.0")
-    implementation("io.springfox:springfox-swagger-ui:3.0.0")
+    implementation("org.springdoc:springdoc-openapi-ui:1.5.9")
+//    implementation("io.springfox:springfox-swagger2:3.0.0")
+//    implementation("io.springfox:springfox-swagger-ui:3.0.0")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor:2.5.6")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa:2.5.6")
     implementation("com.google.guava:guava:31.0.1-jre")
