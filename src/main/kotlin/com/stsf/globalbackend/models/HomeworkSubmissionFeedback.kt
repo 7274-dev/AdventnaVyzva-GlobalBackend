@@ -1,10 +1,8 @@
 package com.stsf.globalbackend.models
 
-import javax.persistence.GeneratedValue
-import javax.persistence.GenerationType
-import javax.persistence.Id
-import javax.persistence.OneToOne
+import javax.persistence.*
 
+@Entity
 data class HomeworkSubmissionFeedback (
         @Id
         @GeneratedValue(strategy = GenerationType.AUTO)
@@ -13,6 +11,6 @@ data class HomeworkSubmissionFeedback (
         @OneToOne
         val homeworkSubmission: HomeworkSubmission,
 
-        @OneToOne
+        @Enumerated(EnumType.STRING)
         val feedback: HomeworkSubmissionFeedbackEnum
         )

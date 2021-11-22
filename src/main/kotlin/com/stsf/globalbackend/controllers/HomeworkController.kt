@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat
 import com.stsf.globalbackend.exceptions.InsufficientPermissionsException
 import com.stsf.globalbackend.exceptions.NoSuchHomeworkException
 import com.stsf.globalbackend.request.*
-import com.stsf.globalbackend.services.AuthenticationService
-import com.stsf.globalbackend.services.ClassService
-import com.stsf.globalbackend.services.HomeworkService
-import com.stsf.globalbackend.services.MarkdownService
+import com.stsf.globalbackend.services.*
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.*
 import java.util.*
@@ -23,7 +20,9 @@ class HomeworkController (
 	@Autowired
 	private val markdownService: MarkdownService,
 	@Autowired
-	private val classService: ClassService
+	private val classService: ClassService,
+	@Autowired
+	private val feedbackService: HomeworkSubmissionFeedbackService
 ) {
   
 	// both attachment mappings have a problem: there is no check about homework ownership!!!
@@ -168,6 +167,36 @@ class HomeworkController (
 	@GetMapping("/done")
 	fun isHomeworkDone(@RequestParam homeworkId: Long): GenericResponse<Boolean> {
 		return GenericResponse(homeworkService.getSubmissions(homeworkId).isNotEmpty())
+	}
+
+	@PutMapping("/feedback")
+	fun addFeedbackToSubmission(@RequestHeader token: String, @RequestBody feedback: HomeworkSubmissionFeedback, @RequestParam submissionId: Long): GenericResponse<HomeworkSubmissionFeedback> {
+		val autenticatedUser = auth.getUserByToken(token)
+
+		if (!autenticatedUser.isAdmin && !autenticatedUser.isTeacher) {
+			throw InsufficientPermissionsException()
+		}
+		return GenericResponse(feedbackService.addFeedbackToSubmission(submissionId, feedback))
+	}
+	@GetMapping("/feedback")
+	fun getFeedbackForSubmission(@RequestHeader token: String, submissionId: Long): GenericResponse<com.stsf.globalbackend.models.HomeworkSubmissionFeedback?> {
+		val authenticatedUser = auth.getUserByToken(token)
+		if (!authenticatedUser.isTeacher && !authenticatedUser.isAdmin) {
+			throw InsufficientPermissionsException()
+		}
+
+		return GenericResponse(feedbackService.getFeedbackBySubmissionId(submissionId))
+	}
+
+	@DeleteMapping("/feedback")
+	fun deleteFeedbackByIf(@RequestHeader token: String, feedbackId: Long): GenericResponse<String> {
+		val authenticatedUser = auth.getUserByToken(token)
+		if (!authenticatedUser.isAdmin && !authenticatedUser.isTeacher) {
+			throw InsufficientPermissionsException()
+		}
+		feedbackService.deleteFeedbackFromSubmission(feedbackId)
+
+		return GenericResponse("Ok")
 	}
 }
 

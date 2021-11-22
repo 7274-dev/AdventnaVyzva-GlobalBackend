@@ -15,7 +15,6 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.streams.toList
 
 @Service
 class HomeworkService (
@@ -39,7 +38,7 @@ class HomeworkService (
 
 	@Throws(NoSuchHomeworkException::class)
 	fun getAttachmentsForHomework(homeworkId: Long): List<HomeworkAttachment> {
-		return homeworkAttachmentRepository.getAllByHomework_Id(homeworkId)
+		return homeworkAttachmentRepository.getAllByHomeworkId(homeworkId)
 	}
 
 	@Throws(NoSuchHomeworkException::class, NoSuchFileException::class)
