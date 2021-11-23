@@ -12,5 +12,8 @@ data class HomeworkSubmissionFeedback (
         val homeworkSubmission: HomeworkSubmission,
 
         @Enumerated(EnumType.STRING)
-        val feedback: HomeworkSubmissionFeedbackEnum
-        )
+        val feedback: HomeworkSubmissionFeedbackEnum,
+
+        @Column(length = 2048)
+        val message: String
+)
