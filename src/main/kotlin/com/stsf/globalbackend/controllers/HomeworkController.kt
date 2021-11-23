@@ -3,7 +3,6 @@ package com.stsf.globalbackend.controllers
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.stsf.globalbackend.exceptions.InsufficientPermissionsException
-import com.stsf.globalbackend.exceptions.NoSuchHomeworkException
 import com.stsf.globalbackend.request.*
 import com.stsf.globalbackend.services.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -76,7 +75,7 @@ class HomeworkController (
 	fun editHomework(@RequestHeader token: String, @RequestParam homeworkId: Long, @RequestBody homework: Homework): GenericResponse<com.stsf.globalbackend.models.Homework> {
 		val authenticatedUser = auth.getUserByToken(token)
 
-		if (!authenticatedUser.isTeacher) {
+		if (!authenticatedUser.isTeacher && !authenticatedUser.isAdmin) {
 			throw InsufficientPermissionsException()
 		}
 
@@ -123,10 +122,6 @@ class HomeworkController (
 			throw InsufficientPermissionsException()
 		}
 
-		if (homeworkSubmission.content == null) {
-			homeworkSubmission.content = ""
-		}
-
 		val homework = homeworkService.getHomeworkData(homeworkSubmission.homeworkId)
 
 		val submission = homeworkService.submitHomework(com.stsf.globalbackend.models.HomeworkSubmission(-1, homework, authenticatedUser, homeworkSubmission.content), homeworkSubmission.fileIds)
@@ -171,17 +166,19 @@ class HomeworkController (
 
 	@PutMapping("/feedback")
 	fun addFeedbackToSubmission(@RequestHeader token: String, @RequestBody feedback: HomeworkSubmissionFeedback, @RequestParam submissionId: Long): GenericResponse<HomeworkSubmissionFeedback> {
-		val autenticatedUser = auth.getUserByToken(token)
+		val authenticatedUser = auth.getUserByToken(token)
 
-		if (!autenticatedUser.isAdmin && !autenticatedUser.isTeacher) {
+		if (!authenticatedUser.isAdmin && !authenticatedUser.isTeacher) {
 			throw InsufficientPermissionsException()
 		}
+
 		return GenericResponse(feedbackService.addFeedbackToSubmission(submissionId, feedback))
 	}
+
 	@GetMapping("/feedback")
 	fun getFeedbackForSubmission(@RequestHeader token: String, submissionId: Long): GenericResponse<com.stsf.globalbackend.models.HomeworkSubmissionFeedback?> {
 		val authenticatedUser = auth.getUserByToken(token)
-		if (!authenticatedUser.isTeacher && !authenticatedUser.isAdmin) {
+		if (!authenticatedUser.isTeacher && !authenticatedUser.isAdmin) {  // FIXME: we want students to be able to fetch feedback
 			throw InsufficientPermissionsException()
 		}
 
@@ -189,11 +186,13 @@ class HomeworkController (
 	}
 
 	@DeleteMapping("/feedback")
-	fun deleteFeedbackByIf(@RequestHeader token: String, feedbackId: Long): GenericResponse<String> {
+	fun deleteFeedbackById(@RequestHeader token: String, feedbackId: Long): GenericResponse<String> {
 		val authenticatedUser = auth.getUserByToken(token)
+
 		if (!authenticatedUser.isAdmin && !authenticatedUser.isTeacher) {
 			throw InsufficientPermissionsException()
 		}
+
 		feedbackService.deleteFeedbackFromSubmission(feedbackId)
 
 		return GenericResponse("Ok")
