@@ -18,8 +18,9 @@ class HomeworkSubmissionFeedbackService (
 
         val submission = submissionRepository.getOne(homeworkSubmissionId)
         val feedback = homeworkSubmissionFeedback.feedback
+        val message = homeworkSubmissionFeedback.message
 
-        val submissionFeedback = com.stsf.globalbackend.models.HomeworkSubmissionFeedback(-1, submission, feedback)
+        val submissionFeedback = com.stsf.globalbackend.models.HomeworkSubmissionFeedback(-1, submission, feedback, message)
 
         submissionFeedbackRepository.save(submissionFeedback)
 

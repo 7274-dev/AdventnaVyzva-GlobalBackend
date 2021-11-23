@@ -7,6 +7,7 @@ import com.stsf.globalbackend.exceptions.NoSuchFileException
 import com.stsf.globalbackend.models.*
 import com.stsf.globalbackend.repositories.*
 import com.stsf.globalbackend.exceptions.NoSuchHomeworkException
+import com.stsf.globalbackend.exceptions.NoSuchSubmissionException
 import com.stsf.globalbackend.request.UserIdAndName
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
@@ -53,6 +54,10 @@ class HomeworkService (
 
 	fun getSubmissionsByUser(userId: Long): List<HomeworkSubmission> {
 		return homeworkSubmissionRepository.getAllByUser_Id(userId)
+	}
+
+	fun getSubmissionById(submissionId: Long): HomeworkSubmission {
+		return homeworkSubmissionRepository.findByIdOrNull(submissionId) ?: throw NoSuchSubmissionException()
 	}
 
 	fun getHomeworkById(homeworkId: Long): Homework {

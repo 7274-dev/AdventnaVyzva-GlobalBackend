@@ -21,7 +21,7 @@ class HomeworkController (
 	@Autowired
 	private val classService: ClassService,
 	@Autowired
-	private val feedbackService: HomeworkSubmissionFeedbackService
+	private val feedbackService: HomeworkSubmissionFeedbackService,
 ) {
   
 	// both attachment mappings have a problem: there is no check about homework ownership!!!
@@ -178,7 +178,10 @@ class HomeworkController (
 	@GetMapping("/feedback")
 	fun getFeedbackForSubmission(@RequestHeader token: String, submissionId: Long): GenericResponse<com.stsf.globalbackend.models.HomeworkSubmissionFeedback?> {
 		val authenticatedUser = auth.getUserByToken(token)
-		if (!authenticatedUser.isTeacher && !authenticatedUser.isAdmin) {  // FIXME: we want students to be able to fetch feedback
+
+		val submissionsByUser = homeworkService.getSubmissionsByUser(authenticatedUser.id).map { it -> it.id }
+
+		if ((!authenticatedUser.isTeacher && !authenticatedUser.isAdmin) || (!submissionsByUser.contains(submissionId))) {
 			throw InsufficientPermissionsException()
 		}
 
