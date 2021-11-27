@@ -28,7 +28,7 @@ class ControllerAdvice {
 
     @ExceptionHandler(InsufficientPermissionsException::class)
     fun handleInsufficientPermissionsException(e: InsufficientPermissionsException): ResponseEntity<GenericResponse<String>> {
-        return ResponseEntity(GenericResponse("Insufficient permissions"), HttpStatus.UNAUTHORIZED)
+        return ResponseEntity(GenericResponse("Insufficient permissions"), HttpStatus.FORBIDDEN)
     }
 
     @ExceptionHandler(NoSuchException::class)
