@@ -176,12 +176,12 @@ class HomeworkController (
 	}
 
 	@GetMapping("/feedback")
-	fun getFeedbackForSubmission(@RequestHeader token: String, submissionId: Long): GenericResponse<com.stsf.globalbackend.models.HomeworkSubmissionFeedback?> {
+	fun getFeedbackForSubmission(@RequestHeader token: String, @RequestParam submissionId: Long): GenericResponse<com.stsf.globalbackend.models.HomeworkSubmissionFeedback?> {
 		val authenticatedUser = auth.getUserByToken(token)
 
-		val submissionsByUser = homeworkService.getSubmissionsByUser(authenticatedUser.id).map { it -> it.id }
+		val submissionsByUser = homeworkService.getSubmissionsByUser(authenticatedUser.id).map { it.id }
 
-		if ((!authenticatedUser.isTeacher && !authenticatedUser.isAdmin) || (!submissionsByUser.contains(submissionId))) {
+		if (!authenticatedUser.isTeacher && !authenticatedUser.isAdmin && !submissionsByUser.contains(submissionId)) {
 			throw InsufficientPermissionsException()
 		}
 
