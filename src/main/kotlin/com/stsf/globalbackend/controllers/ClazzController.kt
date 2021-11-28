@@ -25,7 +25,12 @@ class ClazzController (@Autowired
 
 
 	@GetMapping("/id")
-	fun getClass(@RequestParam classId: Long): GenericResponse<Class> {
+	fun getClass(@RequestHeader token: String, @RequestParam classId: Long): GenericResponse<Class> {
+		val authenticatedUser = authenticationService.getUserByToken(token)
+		if (!classService.getAllUsersInClass(classId).map { it.id }.contains(authenticatedUser.id)) {
+			throw InsufficientPermissionsException()
+		}
+
 		return GenericResponse(classService.getClassById(classId))
 	}
 
@@ -37,7 +42,11 @@ class ClazzController (@Autowired
 			throw InsufficientPermissionsException()
 		}
 
-		return GenericResponse(classService.createClass(className))
+		val clazz = classService.createClass(className)
+
+		classService.addUserToClass(authenticatedUser.id, clazz.id)
+
+		return GenericResponse(clazz)
 
 	}
 
@@ -65,7 +74,14 @@ class ClazzController (@Autowired
 			throw InsufficientPermissionsException()
 		}
 
-		val classes = classService.getAllClasses()
+		val classes = mutableListOf<Class>()
+
+		for (clazz in classService.getAllClasses()) {
+			val users = classService.getAllUsersInClass(clazz.id).map { it.id }
+			if (users.contains(authenticatedUser.id)) {
+				classes.add(clazz)
+			}
+		}
 
 		return GenericResponse(classes)
 	}
@@ -74,8 +90,9 @@ class ClazzController (@Autowired
 	fun addUserToClassController(@RequestHeader token: String, @RequestBody userAndClassId: UserAndClassId): GenericResponse<ClassMember> {
 
 		val authenticatedUser = authenticationService.getUserByToken(token)
+		val users = classService.getAllUsersInClass(userAndClassId.classId).map { it.id }
 
-		if (!authenticatedUser.isTeacher && !authenticatedUser.isAdmin) {
+		if ((!authenticatedUser.isTeacher && !authenticatedUser.isAdmin) || (authenticatedUser.isTeacher && !users.contains(authenticatedUser.id)) ) {
 			throw InsufficientPermissionsException()
 		}
 
@@ -110,11 +127,10 @@ class ClazzController (@Autowired
 		val authenticatedUser = authenticationService.getUserByToken(token)
 		val users = classService.getAllUsersInClass(classId).map { user -> user.id }
 
-		if (!authenticatedUser.isTeacher && !authenticatedUser.isAdmin) {
+		if ((!authenticatedUser.isTeacher && !authenticatedUser.isAdmin) || (authenticatedUser.isTeacher && !users.contains(authenticatedUser.id)) ) {
 			throw InsufficientPermissionsException()
 		}
-		// TODO: Check if teacher owns this class
-		// NOTE: Admins should have the ability to get users from any class
+
 		return GenericResponse(users)
 	}
 

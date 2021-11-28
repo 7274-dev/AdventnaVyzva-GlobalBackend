@@ -72,14 +72,7 @@ class ClassService (
 	// Maybe change return to UserID
 	fun getAllUsersInClass(classId: Long): List<User> {
 		val classMembers = classMemberRepository.findAllByClassId(classId)
-		val users: ArrayList<User> = ArrayList()
-
-		for (classMember in classMembers) {
-			if (!classMember.user.isTeacher && !classMember.user.isAdmin) {
-				users.add(classMember.user)
-			}
-		}
-		return users
+		return classMembers.map { it.user }
 	}
 
 	fun changeClassName(classId: Long, className: String): Class {
