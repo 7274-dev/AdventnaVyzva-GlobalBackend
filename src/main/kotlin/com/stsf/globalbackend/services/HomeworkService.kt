@@ -7,6 +7,7 @@ import com.stsf.globalbackend.exceptions.NoSuchFileException
 import com.stsf.globalbackend.models.*
 import com.stsf.globalbackend.repositories.*
 import com.stsf.globalbackend.exceptions.NoSuchHomeworkException
+import com.stsf.globalbackend.exceptions.NoSuchSubmissionException
 import com.stsf.globalbackend.request.UserIdAndName
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
@@ -15,7 +16,6 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.streams.toList
 
 @Service
 class HomeworkService (
@@ -39,7 +39,7 @@ class HomeworkService (
 
 	@Throws(NoSuchHomeworkException::class)
 	fun getAttachmentsForHomework(homeworkId: Long): List<HomeworkAttachment> {
-		return homeworkAttachmentRepository.getAllByHomework_Id(homeworkId)
+		return homeworkAttachmentRepository.getAllByHomeworkId(homeworkId)
 	}
 
 	@Throws(NoSuchHomeworkException::class, NoSuchFileException::class)
@@ -54,6 +54,10 @@ class HomeworkService (
 
 	fun getSubmissionsByUser(userId: Long): List<HomeworkSubmission> {
 		return homeworkSubmissionRepository.getAllByUser_Id(userId)
+	}
+
+	fun getSubmissionById(submissionId: Long): HomeworkSubmission {
+		return homeworkSubmissionRepository.findByIdOrNull(submissionId) ?: throw NoSuchSubmissionException()
 	}
 
 	fun getHomeworkById(homeworkId: Long): Homework {

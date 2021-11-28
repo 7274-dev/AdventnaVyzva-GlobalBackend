@@ -26,13 +26,13 @@ class AdminController(
     fun getStudentData(@RequestHeader token: String, @RequestParam studentId: Long): GenericResponse<User> {
         val authenticatedUser = authenticationService.getUserByToken(token)
 
-        if (!authenticatedUser.isAdmin) {
+        if (!authenticatedUser.isAdmin && !authenticatedUser.isTeacher) {
             throw InsufficientPermissionsException()
         }
 
         val student = adminService.getStudentData(studentId)
         if (student.isTeacher || student.isAdmin) {
-            throw NoSuchUserException()
+            throw InsufficientPermissionsException()
         }
 
         return GenericResponse(student)
