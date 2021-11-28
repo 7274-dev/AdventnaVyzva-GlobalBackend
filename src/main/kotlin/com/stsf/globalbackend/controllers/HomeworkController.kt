@@ -3,6 +3,7 @@ package com.stsf.globalbackend.controllers
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import com.stsf.globalbackend.exceptions.InsufficientPermissionsException
+import com.stsf.globalbackend.exceptions.NoSuchSubmissionException
 import com.stsf.globalbackend.request.*
 import com.stsf.globalbackend.services.*
 import org.springframework.beans.factory.annotation.Autowired
@@ -176,16 +177,12 @@ class HomeworkController (
 	}
 
 	@GetMapping("/feedback")
-	fun getFeedbackForSubmission(@RequestHeader token: String, @RequestParam submissionId: Long): GenericResponse<com.stsf.globalbackend.models.HomeworkSubmissionFeedback?> {
+	fun getFeedbackForSubmission(@RequestHeader token: String, @RequestParam homeworkId: Long): GenericResponse<List<com.stsf.globalbackend.models.HomeworkSubmissionFeedback>> {
 		val authenticatedUser = auth.getUserByToken(token)
 
-		val submissionsByUser = homeworkService.getSubmissionsByUser(authenticatedUser.id).map { it.id }
+		val submission = homeworkService.getSubmissionsByUser(authenticatedUser.id).find { it.homework.id == homeworkId } ?: throw NoSuchSubmissionException()
 
-		if (!authenticatedUser.isTeacher && !authenticatedUser.isAdmin && !submissionsByUser.contains(submissionId)) {
-			throw InsufficientPermissionsException()
-		}
-
-		return GenericResponse(feedbackService.getFeedbackBySubmissionId(submissionId))
+		return GenericResponse(feedbackService.getFeedbackBySubmissionId(submission.id))
 	}
 
 	@DeleteMapping("/feedback")

@@ -27,8 +27,8 @@ class HomeworkSubmissionFeedbackService (
         return homeworkSubmissionFeedback
     }
 
-    fun getFeedbackBySubmissionId(submissionId: Long): com.stsf.globalbackend.models.HomeworkSubmissionFeedback? {
-        return submissionFeedbackRepository.findOneByHomeworkSubmissionId(submissionId)
+    fun getFeedbackBySubmissionId(submissionId: Long): List<com.stsf.globalbackend.models.HomeworkSubmissionFeedback> {
+        return submissionFeedbackRepository.findAllByHomeworkSubmissionId(submissionId)
     }
 
     fun deleteFeedbackFromSubmission(feedbackId: Long) {

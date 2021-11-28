@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.Query
 
 interface HomeworkSubmissionFeedbackRepository : JpaRepository<HomeworkSubmissionFeedback, Long> {
     @Query("from HomeworkSubmissionFeedback s where s.homeworkSubmission.id = :submissionId")
-    fun findOneByHomeworkSubmissionId(submissionId: Long): HomeworkSubmissionFeedback?
+    fun findAllByHomeworkSubmissionId(submissionId: Long): List<HomeworkSubmissionFeedback>
 }
