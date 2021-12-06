@@ -62,7 +62,7 @@ class HomeworkController (
 	fun deleteHomework(@RequestHeader token: String, @RequestParam homeworkId: Long): GenericResponse<String> {
 		val authenticatedUser = auth.getUserByToken(token)
 
-		if (!authenticatedUser.isTeacher) {
+		if (!authenticatedUser.isAdmin && !authenticatedUser.isTeacher) {
 			throw InsufficientPermissionsException()
 		}
 		// TODO: Check if teacher owns the class that the homework is assigned to
