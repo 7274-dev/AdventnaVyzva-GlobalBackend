@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 
 interface HomeworkAttachmentRepository : JpaRepository<HomeworkAttachment, Long> {
-    fun getAllByHomework_Id(homework_id: Long): List<HomeworkAttachment>
+    fun getAllByHomeworkId(homework_id: Long): List<HomeworkAttachment>
 }

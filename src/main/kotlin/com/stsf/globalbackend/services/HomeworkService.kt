@@ -7,6 +7,8 @@ import com.stsf.globalbackend.exceptions.NoSuchFileException
 import com.stsf.globalbackend.models.*
 import com.stsf.globalbackend.repositories.*
 import com.stsf.globalbackend.exceptions.NoSuchHomeworkException
+import com.stsf.globalbackend.exceptions.NoSuchSubmissionException
+import com.stsf.globalbackend.request.UserIdAndName
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -37,7 +39,7 @@ class HomeworkService (
 
 	@Throws(NoSuchHomeworkException::class)
 	fun getAttachmentsForHomework(homeworkId: Long): List<HomeworkAttachment> {
-		return homeworkAttachmentRepository.getAllByHomework_Id(homeworkId)
+		return homeworkAttachmentRepository.getAllByHomeworkId(homeworkId)
 	}
 
 	@Throws(NoSuchHomeworkException::class, NoSuchFileException::class)
@@ -52,6 +54,10 @@ class HomeworkService (
 
 	fun getSubmissionsByUser(userId: Long): List<HomeworkSubmission> {
 		return homeworkSubmissionRepository.getAllByUser_Id(userId)
+	}
+
+	fun getSubmissionById(submissionId: Long): HomeworkSubmission {
+		return homeworkSubmissionRepository.findByIdOrNull(submissionId) ?: throw NoSuchSubmissionException()
 	}
 
 	fun getHomeworkById(homeworkId: Long): Homework {
@@ -152,30 +158,25 @@ class HomeworkService (
 		homeworkRepository.deleteById(homeworkId)
 	}
 
-	fun submitHomework(homeworkSubmission: HomeworkSubmission, attachmentIds: List<Long>?) {
+	fun submitHomework(homeworkSubmission: HomeworkSubmission, attachmentIds: List<Long>): HomeworkSubmission {
+		val homeworkSubmissionSaved = homeworkSubmissionRepository.save(homeworkSubmission)
 
-		if (attachmentIds != null) {
-			for (attachment in attachmentIds) {
-				val attachmentId = fileRepository.findByIdOrNull(attachment) ?: throw NoSuchFileException()
-				val attachment = HomeworkSubmissionAttachment(-1, homeworkSubmission, attachmentId)
+		for (attachmentId in attachmentIds) {
+            val attachment = fileRepository.findByIdOrNull(attachmentId) ?: continue
+            homeworkSubmissionAttachmentRepository.save(HomeworkSubmissionAttachment(-1, homeworkSubmissionSaved, attachment))
+        }
 
-				homeworkSubmissionAttachmentRepository.save(attachment)
-			}
-		}
-		homeworkSubmissionRepository.save(homeworkSubmission)
+		return homeworkSubmissionSaved
 	}
 
-	fun getSubmissions(homeworkId: Long, userId: Long): List<HomeworkSubmission> {
-		val output = mutableListOf<HomeworkSubmission>()
-		val submissions = homeworkSubmissionRepository.findAll()
+	fun getSubmissions(homeworkId: Long): MutableList<com.stsf.globalbackend.request.HomeworkSubmission> {
+		val output: MutableList<com.stsf.globalbackend.request.HomeworkSubmission> = mutableListOf()
+		val submissions: List<HomeworkSubmission> = homeworkSubmissionRepository.getAllByHomework_Id(homeworkId)
 
 		for (submission in submissions) {
-
-			if (submission.user.id == userId) {
-				output.add(submission)
-			}
-
-		}
+			val attachments = homeworkSubmissionAttachmentRepository.findAllBySubmissionId(submission.id)
+            output.add(com.stsf.globalbackend.request.HomeworkSubmission(submission.id, UserIdAndName(submission.user.id, submission.user.name), attachments, homeworkId, submission.content, emptyList()))
+        }
 
 		return output
 	}

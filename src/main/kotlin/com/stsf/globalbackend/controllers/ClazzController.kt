@@ -92,7 +92,6 @@ class ClazzController (@Autowired
 
 	@DeleteMapping("/member")
 	fun removeUserFromClassController(@RequestHeader token: String, @RequestBody userAndClassId: UserAndClassId): GenericResponse<String> {
-
 		val authenticatedUser = authenticationService.getUserByToken(token)
 
 		if (!authenticatedUser.isTeacher && !authenticatedUser.isAdmin) {
@@ -111,7 +110,7 @@ class ClazzController (@Autowired
 		val authenticatedUser = authenticationService.getUserByToken(token)
 		val users = classService.getAllUsersInClass(classId).map { user -> user.id }
 
-		if (!authenticatedUser.isTeacher) {
+		if (!authenticatedUser.isTeacher && !authenticatedUser.isAdmin) {
 			throw InsufficientPermissionsException()
 		}
 		// TODO: Check if teacher owns this class
@@ -120,7 +119,7 @@ class ClazzController (@Autowired
 	}
 
 	@GetMapping("/member/notinclass")
-	fun getAllUsersNotFromClass(@RequestHeader token: String, @RequestParam classId: Long): GenericResponse<List<UserIdAndName>> {
+	fun getAllUsersNotFromClass(@RequestHeader token: String): GenericResponse<List<UserIdAndName>> {
 		val authenticatedUser = authenticationService.getUserByToken(token)
 
 		if (!authenticatedUser.isAdmin && !authenticatedUser.isTeacher) {
