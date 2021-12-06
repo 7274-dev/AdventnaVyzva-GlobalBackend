@@ -178,13 +178,18 @@ class HomeworkController (
 	}
 
 	@GetMapping("/feedback")
-	fun getFeedbackForSubmission(@RequestHeader token: String, @RequestParam homeworkId: Long): GenericResponse<List<SubmissionFeedbackAndMessage>> {
+	fun getFeedbackForAuthenticatedUser(@RequestHeader token: String, @RequestParam homeworkId: Long): GenericResponse<List<SubmissionFeedbackAndMessage>> {
 		val authenticatedUser = auth.getUserByToken(token)
 
 //		val submission = homeworkService.getSubmissionsByUser(authenticatedUser.id).find { it.homework.id == homeworkId } ?: throw NoSuchSubmissionException()
 
 
 		return GenericResponse(feedbackService.getFeedbackByHomeworkAndUserId(authenticatedUser.id, homeworkId))
+	}
+
+	@GetMapping("/feedback/submission")
+	fun getFeedbackForSubmission(@RequestParam userId: Long, @RequestParam homeworkId: Long): GenericResponse<List<SubmissionFeedbackAndMessage>> {
+		return GenericResponse(feedbackService.getFeedbackByHomeworkAndUserId(userId, homeworkId))
 	}
 
 	@DeleteMapping("/feedback")
