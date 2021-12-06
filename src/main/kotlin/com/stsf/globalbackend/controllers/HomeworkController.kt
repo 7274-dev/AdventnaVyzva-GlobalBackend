@@ -161,13 +161,8 @@ class HomeworkController (
 		// Performs a check to see if user owns the submissions or is admin
 		val homework = homeworkService.getHomeworkById(homeworkId) ?: throw NoSuchHomeworkException()
 		val classMembers = classService.getAllUsersInClass(homework.clazz.id)
-		var userHasAccessToHomework = classMembers.contains(authenticatedUser)
 
-		if (authenticatedUser.isAdmin) {
-			userHasAccessToHomework = true
-		}
-
-		if (!userHasAccessToHomework) {
+		if (!classMembers.contains(authenticatedUser) && !authenticatedUser.isAdmin) {
 			throw InsufficientPermissionsException()
 		}
 
