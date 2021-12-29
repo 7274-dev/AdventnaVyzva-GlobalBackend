@@ -117,18 +117,8 @@ class HomeworkController (
 			return GenericResponse(homeworkService.getHomeworkByDateAndClass(classId, date))
 	}
 	@PostMapping("/submissions")
-	fun submitHomework(@RequestHeader token: String, @RequestBody homeworkSubmission: HomeworkSubmission): GenericResponse<com.stsf.globalbackend.models.HomeworkSubmission> {
-		val authenticatedUser = auth.getUserByToken(token)
-
-		if (homeworkService.getHomeworkById(homeworkSubmission.homeworkId) !in homeworkService.getAllHomeworksByStudent(authenticatedUser.id)) {
-			throw InsufficientPermissionsException()
-		}
-
-		val homework = homeworkService.getHomeworkData(homeworkSubmission.homeworkId)
-
-		val submission = homeworkService.submitHomework(com.stsf.globalbackend.models.HomeworkSubmission(-1, homework, authenticatedUser, homeworkSubmission.content), homeworkSubmission.fileIds)
-
-		return GenericResponse(submission)
+	fun submitHomework(@RequestHeader token: String, @RequestBody homeworkSubmission: HomeworkSubmission): GenericResponse<String> {
+		return GenericResponse("Homework submission off!")
 	}
 
 	@GetMapping("/submissions/user")
